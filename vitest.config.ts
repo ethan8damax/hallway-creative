@@ -7,6 +7,18 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     setupFiles: ['./vitest.setup.ts'],
+    // ponytail: defense-in-depth alongside .gitignore — a nested Claude Code
+    // worktree under .claude/worktrees/ would otherwise get globbed too.
+    // Vitest's own defaults are repeated here since setting `exclude`
+    // replaces them rather than extending them.
+    exclude: [
+      '**/node_modules/**',
+      '**/dist/**',
+      '**/cypress/**',
+      '**/.{idea,git,cache,output,temp}/**',
+      '**/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress,tsup,build}.config.*',
+      '**/.claude/**',
+    ],
     // ponytail: automocking '@/lib/sanity/queries' (e.g. in page tests) imports the
     // real module first to derive its shape, which constructs sanityClient — give it
     // a dummy projectId so that doesn't throw. Not real Sanity config.
