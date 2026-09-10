@@ -47,14 +47,34 @@ export function ContactForm() {
 
       <label className="flex flex-col gap-1">
         Name
-        <input type="text" name="name" className="rounded-md border border-neutral-300 p-2" />
-        {errors.name && <span className="text-sm text-red-600">{errors.name}</span>}
+        <input
+          type="text"
+          name="name"
+          className="rounded-md border border-neutral-300 p-2"
+          aria-invalid={errors.name ? true : undefined}
+          aria-describedby={errors.name ? 'name-error' : undefined}
+        />
+        {errors.name && (
+          <span id="name-error" role="alert" className="text-sm text-red-600">
+            {errors.name}
+          </span>
+        )}
       </label>
 
       <label className="flex flex-col gap-1">
         Email
-        <input type="email" name="email" className="rounded-md border border-neutral-300 p-2" />
-        {errors.email && <span className="text-sm text-red-600">{errors.email}</span>}
+        <input
+          type="email"
+          name="email"
+          className="rounded-md border border-neutral-300 p-2"
+          aria-invalid={errors.email ? true : undefined}
+          aria-describedby={errors.email ? 'email-error' : undefined}
+        />
+        {errors.email && (
+          <span id="email-error" role="alert" className="text-sm text-red-600">
+            {errors.email}
+          </span>
+        )}
       </label>
 
       <label className="flex flex-col gap-1">
@@ -64,8 +84,18 @@ export function ContactForm() {
 
       <label className="flex flex-col gap-1">
         Message
-        <textarea name="message" rows={5} className="rounded-md border border-neutral-300 p-2" />
-        {errors.message && <span className="text-sm text-red-600">{errors.message}</span>}
+        <textarea
+          name="message"
+          rows={5}
+          className="rounded-md border border-neutral-300 p-2"
+          aria-invalid={errors.message ? true : undefined}
+          aria-describedby={errors.message ? 'message-error' : undefined}
+        />
+        {errors.message && (
+          <span id="message-error" role="alert" className="text-sm text-red-600">
+            {errors.message}
+          </span>
+        )}
       </label>
 
       <button type="submit" disabled={status === 'submitting'} className="rounded-md bg-neutral-900 px-6 py-3 text-white disabled:opacity-50">
