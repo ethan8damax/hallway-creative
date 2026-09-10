@@ -48,3 +48,4 @@ Not yet written. Once a copywriting pass happens, copy should live in dedicated 
 - CMS vendor for subsystem 1 — deferred to implementation time (selected via Vercel marketplace, not guessed in the spec).
 - Transactional email vendor for the contact form — same, deferred to implementation time.
 - Domain name — needs to be picked and registered.
+- Andrew's real photos/videos — not yet provided. Site ships with clearly-marked placeholder media in the meantime; get originals directly from Andrew (e.g. a Dropbox/Drive export), not scraped from Instagram (heavily compressed). Swapping in real content is a CMS content-entry task, not a code change.

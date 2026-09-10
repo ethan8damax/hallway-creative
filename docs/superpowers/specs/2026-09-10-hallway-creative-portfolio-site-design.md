@@ -50,6 +50,10 @@ A marketing/portfolio website for Andrew (photographer/videographer) that makes 
 - **About copy**: bio text, portrait photo.
 - **Site-wide copy**: hero text, footer text — editable without redeploy.
 
+## Placeholder content
+
+Andrew's real photos aren't available yet. Build and ship with placeholder images in every portfolio/media slot (clearly filler, not stock photos trying to pass as his work) so the CMS structure, layout, and gallery behavior can be built and reviewed now. Swapping placeholders for his real photos is a content-entry task through the CMS once he provides them — not a code change.
+
 ## Error handling
 
 - Contact form: client-side and server-side validation (required fields, valid email); honeypot field for basic spam protection; graceful user-facing failure message if the email send fails (never a silent failure or raw error).
