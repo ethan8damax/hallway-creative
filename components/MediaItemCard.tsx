@@ -4,8 +4,10 @@ import { getVideoEmbedUrl } from '@/lib/video'
 import type { MediaItem } from '@/lib/sanity/types'
 
 export function MediaItemCard({ item }: { item: MediaItem }) {
-  if (item.mediaType === 'video' && item.videoUrl) {
-    const embedUrl = getVideoEmbedUrl(item.videoUrl)
+  if (item.mediaType === 'video') {
+    // ponytail: videoUrl missing or unparseable both land here, so a
+    // malformed video document reads the same as a broken embed link.
+    const embedUrl = item.videoUrl ? getVideoEmbedUrl(item.videoUrl) : null
     return (
       <div className="aspect-video w-full overflow-hidden rounded-md bg-black">
         {embedUrl ? (
@@ -24,7 +26,8 @@ export function MediaItemCard({ item }: { item: MediaItem }) {
     ? (() => {
         try {
           return urlForImage(item.image).width(800).height(1000).url()
-        } catch {
+        } catch (error) {
+          console.error(`Failed to build image URL for media item ${item._id}`, error)
           return null
         }
       })()
