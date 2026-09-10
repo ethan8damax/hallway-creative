@@ -22,6 +22,6 @@ describe('ServicesPage', () => {
 
     render(await ServicesPage())
 
-    expect(screen.getByText('Services coming soon.')).toBeInTheDocument()
+    expect(screen.getByText('New services coming soon — check back shortly.')).toBeInTheDocument()
   })
 })

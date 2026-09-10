@@ -17,7 +17,7 @@ export default async function ServicesPage() {
             </div>
           ))
         ) : (
-          <p className="col-span-full text-neutral-400">Services coming soon.</p>
+          <p className="col-span-full text-neutral-400">New services coming soon — check back shortly.</p>
         )}
       </div>
     </div>
