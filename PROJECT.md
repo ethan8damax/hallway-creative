@@ -45,7 +45,8 @@ Not yet written. Once a copywriting pass happens, copy should live in dedicated 
 ## Open questions log
 
 - Client gallery storage backend (Dropbox-proxy vs. R2/S3/Blob) — deferred to subsystem 2 spec.
-- CMS vendor for subsystem 1 — deferred to implementation time (selected via Vercel marketplace, not guessed in the spec).
-- Transactional email vendor for the contact form — same, deferred to implementation time.
+- CMS: Sanity (provisioned via Vercel marketplace).
+- Transactional email: Resend (provisioned via Vercel marketplace).
 - Domain name — needs to be picked and registered.
 - Andrew's real photos/videos — not yet provided. Site ships with clearly-marked placeholder media in the meantime; get originals directly from Andrew (e.g. a Dropbox/Drive export), not scraped from Instagram (heavily compressed). Swapping in real content is a CMS content-entry task, not a code change.
+- `CONTACT_TO_EMAIL` in `.env.local` still needs Andrew's real email address (currently a placeholder, `andrew@example.com`).
