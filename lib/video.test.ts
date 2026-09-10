@@ -21,4 +21,8 @@ describe('getVideoEmbedUrl', () => {
   it('returns null for an invalid URL', () => {
     expect(getVideoEmbedUrl('not a url')).toBeNull()
   })
+
+  it('returns null for a lookalike host that merely contains youtube.com', () => {
+    expect(getVideoEmbedUrl('https://notyoutube.com/watch?v=abc123')).toBeNull()
+  })
 })
