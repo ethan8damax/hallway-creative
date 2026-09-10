@@ -21,7 +21,12 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
-  const settings = await getSiteSettings();
+  // ponytail: a Sanity outage degrades to a footer with no contact links,
+  // not a dead site — every page renders inside this layout.
+  const settings = await getSiteSettings().catch((error) => {
+    console.error("Failed to fetch site settings", error);
+    return null;
+  });
 
   return (
     <html lang="en" className="h-full antialiased">
