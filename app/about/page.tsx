@@ -5,7 +5,7 @@ import { urlForImage } from '@/lib/sanity/image'
 export default async function AboutPage() {
   // ponytail: matches the outage-handling pattern in app/page.tsx,
   // app/portfolio/page.tsx, and app/services/page.tsx — a Sanity hiccup
-  // degrades to the "Bio coming soon." fallback rather than crashing the page.
+  // degrades to the fallback bio text rather than crashing the page.
   const about = await getAbout().catch(() => null)
 
   return (
