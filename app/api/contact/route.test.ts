@@ -59,8 +59,22 @@ describe('POST /api/contact', () => {
     expect(sendMock).not.toHaveBeenCalled()
   })
 
-  it('returns 502 when the email send fails', async () => {
+  it('returns 502 when the email send rejects', async () => {
     sendMock.mockRejectedValue(new Error('send failed'))
+    const { POST } = await import('./route')
+
+    const res = await POST(
+      new Request('http://localhost/api/contact', {
+        method: 'POST',
+        body: JSON.stringify({ name: 'Jane', email: 'jane@example.com', message: 'Hi' }),
+      })
+    )
+
+    expect(res.status).toBe(502)
+  })
+
+  it('returns 502 when the email send resolves with an error (Resend does not throw on API errors)', async () => {
+    sendMock.mockResolvedValue({ data: null, error: { message: 'domain not verified', name: 'validation_error', statusCode: 403 } })
     const { POST } = await import('./route')
 
     const res = await POST(
