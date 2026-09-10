@@ -18,7 +18,9 @@ export default async function PortfolioPage() {
             </Link>
           ))
         ) : (
-          <p className="col-span-full text-neutral-400">No categories yet.</p>
+          <p className="col-span-full rounded-md border border-dashed border-neutral-300 bg-neutral-100 py-16 text-center text-lg text-neutral-400">
+            New galleries coming soon — check back shortly.
+          </p>
         )}
       </div>
     </div>
