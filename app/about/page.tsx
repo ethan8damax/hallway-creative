@@ -11,7 +11,7 @@ export default async function AboutPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-16">
       <h1 className="text-3xl font-semibold">About</h1>
-      <p className="mt-2 text-lg text-neutral-600">Andrew Hall</p>
+      <h2 className="mt-2 text-lg font-normal text-neutral-600">Andrew Hall</h2>
       {about?.portrait ? (
         <div className="relative mt-8 aspect-[4/5] w-full max-w-sm overflow-hidden rounded-md">
           <Image src={urlForImage(about.portrait).width(600).height(750).url()} alt="Andrew Hall" fill className="object-cover" />
