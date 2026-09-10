@@ -17,6 +17,7 @@
     "next-sanity": "^13.3.4",
     "react": "19.2.8",
     "react-dom": "19.2.8",
+    "resend": "^6.27.0",
     "sanity": "^6.13.1"
   },
   "devDependencies": {
