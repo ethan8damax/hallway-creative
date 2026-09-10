@@ -19,6 +19,6 @@ describe('AboutPage', () => {
 
     render(await AboutPage())
 
-    expect(screen.getByText('Bio coming soon.')).toBeInTheDocument()
+    expect(screen.getByText("Andrew's story is coming soon — check back shortly.")).toBeInTheDocument()
   })
 })
