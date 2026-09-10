@@ -14,8 +14,30 @@ export default defineType({
       initialValue: 'image',
       validation: (Rule) => Rule.required(),
     }),
-    defineField({ name: 'image', title: 'Image', type: 'image', hidden: ({ parent }) => parent?.mediaType !== 'image' }),
-    defineField({ name: 'videoUrl', title: 'Video URL (Vimeo or YouTube)', type: 'url', hidden: ({ parent }) => parent?.mediaType !== 'video' }),
+    defineField({
+      name: 'image',
+      title: 'Image',
+      type: 'image',
+      hidden: ({ parent }) => parent?.mediaType !== 'image',
+      validation: (Rule) =>
+        Rule.custom((value, context) => {
+          const parent = context.parent as { mediaType?: string } | undefined
+          if (parent?.mediaType === 'image' && !value) return 'Image is required when Media Type is Image'
+          return true
+        }),
+    }),
+    defineField({
+      name: 'videoUrl',
+      title: 'Video URL (Vimeo or YouTube)',
+      type: 'url',
+      hidden: ({ parent }) => parent?.mediaType !== 'video',
+      validation: (Rule) =>
+        Rule.custom((value, context) => {
+          const parent = context.parent as { mediaType?: string } | undefined
+          if (parent?.mediaType === 'video' && !value) return 'Video URL is required when Media Type is Video'
+          return true
+        }),
+    }),
     defineField({ name: 'caption', title: 'Caption', type: 'string' }),
     defineField({ name: 'order', title: 'Display Order', type: 'number', initialValue: 0 }),
   ],
