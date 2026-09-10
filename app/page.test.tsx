@@ -15,7 +15,8 @@ describe('HomePage', () => {
     render(await HomePage())
 
     expect(screen.getByText('Moments, captured')).toBeInTheDocument()
-    expect(screen.getByText('Sports')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Get in touch' })).toHaveAttribute('href', '/contact')
+    expect(screen.getByRole('link', { name: 'Sports' })).toHaveAttribute('href', '/portfolio/sports')
   })
 
   it('shows a fallback message when there are no categories yet', async () => {

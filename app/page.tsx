@@ -2,7 +2,12 @@ import Link from 'next/link'
 import { getCategories, getSiteSettings } from '@/lib/sanity/queries'
 
 export default async function HomePage() {
-  const [settings, categories] = await Promise.all([getSiteSettings(), getCategories()])
+  // ponytail: matches the outage-handling pattern in app/layout.tsx — a
+  // Sanity hiccup degrades to fallback copy, not a dead homepage.
+  const [settings, categories] = await Promise.all([
+    getSiteSettings().catch(() => null),
+    getCategories().catch(() => []),
+  ])
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-16">
