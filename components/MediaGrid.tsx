@@ -10,5 +10,5 @@ export function MediaGrid({ items }: { items: MediaItem[] }) {
       ? items.map((item) => <MediaItemCard key={item._id} item={item} />)
       : Array.from({ length: PLACEHOLDER_COUNT }, (_, i) => <PlaceholderTile key={i} />)
 
-  return <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">{tiles}</div>
+  return <div className="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3">{tiles}</div>
 }

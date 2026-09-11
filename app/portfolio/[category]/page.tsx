@@ -16,10 +16,10 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
   const items = await getMediaItemsForCategory(category._id).catch(() => [])
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-16">
-      <h1 className="text-3xl font-semibold">{category.title}</h1>
-      {category.description && <p className="mt-2 text-neutral-600">{category.description}</p>}
-      <div className="mt-8">
+    <div className="mx-auto max-w-6xl px-6 py-24">
+      <h1 className="font-display text-4xl text-ink">{category.title}</h1>
+      {category.description && <p className="mt-3 max-w-2xl text-muted">{category.description}</p>}
+      <div className="mt-12">
         <MediaGrid items={items} />
       </div>
     </div>

@@ -1,26 +1,64 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: oklch(0.09 0 0);
+  --surface: oklch(0.15 0 0);
+  --ink: oklch(0.95 0 0);
+  --muted: oklch(0.62 0 0);
+  --border: oklch(0.24 0 0);
+  --tally-red: oklch(0.56 0.19 25);
+  --tally-red-deep: oklch(0.42 0.18 25);
+  /* ponytail: a single red can't be both a white-text-safe fill AND
+     4.5:1-safe as standalone text on near-black at once (opposite ends
+     of the luminance sandwich) — this lighter variant is for red used
+     as text (e.g. form error copy), --tally-red stays for fills/borders. */
+  --tally-red-text: oklch(0.66 0.18 25);
+  --monitor-blue: oklch(0.72 0.09 230);
+  --on-accent: oklch(0.98 0 0);
+}
+
+.light {
+  --bg: oklch(1 0 0);
+  --surface: oklch(0.965 0 0);
+  --ink: oklch(0.16 0 0);
+  --muted: oklch(0.5 0 0);
+  --border: oklch(0.87 0 0);
+  --tally-red: oklch(0.42 0.18 25);
+  --tally-red-deep: oklch(0.32 0.16 25);
+  --tally-red-text: oklch(0.42 0.18 25);
+  --monitor-blue: oklch(0.42 0.1 230);
+  --on-accent: oklch(1 0 0);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-tally: var(--tally-red);
+  --color-tally-deep: var(--tally-red-deep);
+  --color-tally-text: var(--tally-red-text);
+  --color-monitor: var(--monitor-blue);
+  --color-on-accent: var(--on-accent);
+  --font-display: var(--font-fraunces);
+  --font-sans: var(--font-inter);
+  --radius-xs: 2px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans), system-ui, sans-serif;
 }

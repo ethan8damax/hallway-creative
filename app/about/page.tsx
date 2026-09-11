@@ -23,15 +23,19 @@ export default async function AboutPage() {
     : null
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-16">
-      <h1 className="text-3xl font-semibold">About</h1>
-      <h2 className="mt-2 text-lg font-normal text-neutral-600">Andrew Hall</h2>
-      {portraitSrc ? (
-        <div className="relative mt-8 aspect-[4/5] w-full max-w-sm overflow-hidden rounded-md">
-          <Image src={portraitSrc} alt="Andrew Hall" fill className="object-cover" />
-        </div>
-      ) : null}
-      <p className="mt-8 whitespace-pre-line text-neutral-700">{about?.bio || "Andrew's story is coming soon — check back shortly."}</p>
+    <div className="mx-auto max-w-4xl px-6 py-24">
+      <h1 className="font-display text-4xl text-ink">About</h1>
+      <p className="mt-2 text-lg text-muted">Andrew Hall</p>
+      <div className="mt-10 flex flex-col gap-10 sm:flex-row sm:items-start">
+        {portraitSrc && (
+          <div className="relative aspect-[4/5] w-full max-w-sm shrink-0 overflow-hidden rounded-xs bg-surface">
+            <Image src={portraitSrc} alt="Andrew Hall" fill className="object-cover" />
+          </div>
+        )}
+        <p className="whitespace-pre-line text-lg leading-relaxed text-ink">
+          {about?.bio || "Andrew's story is coming soon — check back shortly."}
+        </p>
+      </div>
     </div>
   )
 }

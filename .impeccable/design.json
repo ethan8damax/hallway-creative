@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-11T00:00:00.000Z",
+  "title": "Design System: HallWay Creative",
+  "extensions": {
+    "colorMeta": {
+      "bg": { "role": "neutral", "displayName": "Screening Black", "canonical": "oklch(0.09 0 0)", "tonalRamp": ["oklch(0.05 0 0)", "oklch(0.09 0 0)", "oklch(0.15 0 0)", "oklch(0.24 0 0)", "oklch(0.38 0 0)", "oklch(0.62 0 0)", "oklch(0.80 0 0)", "oklch(0.95 0 0)"] },
+      "tally-red": { "role": "primary", "displayName": "Tally-Light Red", "canonical": "oklch(0.56 0.19 25)", "tonalRamp": ["oklch(0.20 0.10 25)", "oklch(0.30 0.14 25)", "oklch(0.42 0.18 25)", "oklch(0.50 0.19 25)", "oklch(0.56 0.19 25)", "oklch(0.64 0.17 25)", "oklch(0.76 0.12 25)", "oklch(0.90 0.05 25)"] },
+      "monitor-blue": { "role": "secondary", "displayName": "Monitor Blue", "canonical": "oklch(0.72 0.09 230)", "tonalRamp": ["oklch(0.25 0.06 230)", "oklch(0.35 0.08 230)", "oklch(0.42 0.10 230)", "oklch(0.55 0.10 230)", "oklch(0.72 0.09 230)", "oklch(0.80 0.07 230)", "oklch(0.88 0.05 230)", "oklch(0.95 0.02 230)"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Page-level hero headlines only, one per page." },
+      "headline": { "displayName": "Headline", "purpose": "Section titles (portfolio category, services heading)." },
+      "body": { "displayName": "Body", "purpose": "Paragraph copy, max 70ch." }
+    },
+    "shadows": [
+      { "name": "lightbox-overlay", "value": "0 24px 64px rgba(0,0,0,0.45)", "purpose": "Full-bleed image lightbox floating over the page. The only sanctioned shadow use." }
+    ],
+    "motion": [
+      { "name": "ease-out-quart", "value": "cubic-bezier(0.25, 1, 0.5, 1)", "purpose": "Default easing for hover/reveal transitions." },
+      { "name": "duration-standard", "value": "400ms", "purpose": "Card hover scale, nav transitions." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "xl", "value": "1280px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Reserved for the single most important action per page (contact CTA).",
+      "html": "<button class=\"ds-btn-primary\">Get in touch</button>",
+      "css": ".ds-btn-primary { background: oklch(0.56 0.19 25); color: oklch(0.98 0 0); padding: 14px 32px; border-radius: 2px; border: none; font-family: Inter, system-ui, sans-serif; font-weight: 600; font-size: 0.9375rem; cursor: pointer; transition: background 0.4s cubic-bezier(0.25, 1, 0.5, 1); } .ds-btn-primary:hover { background: oklch(0.42 0.18 25); } .ds-btn-primary:focus-visible { outline: 2px solid oklch(0.72 0.09 230); outline-offset: 2px; }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Secondary actions (e.g. 'View full gallery').",
+      "html": "<button class=\"ds-btn-ghost\">View full gallery</button>",
+      "css": ".ds-btn-ghost { background: transparent; color: oklch(0.95 0 0); padding: 14px 32px; border-radius: 2px; border: 1px solid oklch(0.24 0 0); font-family: Inter, system-ui, sans-serif; font-weight: 600; font-size: 0.9375rem; cursor: pointer; transition: border-color 0.4s cubic-bezier(0.25, 1, 0.5, 1); } .ds-btn-ghost:hover { border-color: oklch(0.62 0 0); } .ds-btn-ghost:focus-visible { outline: 2px solid oklch(0.72 0.09 230); outline-offset: 2px; }"
+    },
+    {
+      "name": "Media Item Card",
+      "kind": "card",
+      "refersTo": "media-item-card",
+      "description": "Signature component: a single portfolio photo/video with a below-image caption. No border, no shadow, no overlay.",
+      "html": "<figure class=\"ds-media-card\"><div class=\"ds-media-card-image\"></div><figcaption class=\"ds-media-card-caption\">Weekend at the coast</figcaption></figure>",
+      "css": ".ds-media-card { margin: 0; } .ds-media-card-image { aspect-ratio: 4/5; background: oklch(0.15 0 0); border-radius: 2px; transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1); } .ds-media-card:hover .ds-media-card-image { transform: scale(1.02); } .ds-media-card-caption { margin-top: 12px; font-family: Inter, system-ui, sans-serif; font-weight: 600; font-size: 1.125rem; color: oklch(0.95 0 0); }"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "text-input",
+      "description": "Contact form field: underline-only, no boxed background.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-field-label\">Name</span><input class=\"ds-field-input\" type=\"text\" /></label>",
+      "css": ".ds-field { display: block; } .ds-field-label { display: block; font-family: Inter, system-ui, sans-serif; font-size: 0.8125rem; font-weight: 500; letter-spacing: 0.02em; color: oklch(0.62 0 0); margin-bottom: 6px; } .ds-field-input { width: 100%; background: transparent; border: none; border-bottom: 1px solid oklch(0.24 0 0); color: oklch(0.95 0 0); font-family: Inter, system-ui, sans-serif; font-size: 1rem; padding: 8px 0; } .ds-field-input:focus { outline: none; border-bottom-color: oklch(0.72 0.09 230); }"
+    },
+    {
+      "name": "Primary Nav",
+      "kind": "nav",
+      "refersTo": "primary-nav",
+      "description": "Header navigation. Active link gets a tally-red underline.",
+      "html": "<nav class=\"ds-nav\"><a class=\"ds-nav-link ds-nav-link-active\" href=\"#\">Portfolio</a><a class=\"ds-nav-link\" href=\"#\">Services</a><a class=\"ds-nav-link\" href=\"#\">About</a></nav>",
+      "css": ".ds-nav { display: flex; gap: 32px; } .ds-nav-link { font-family: Inter, system-ui, sans-serif; font-size: 0.9375rem; color: oklch(0.95 0 0); text-decoration: none; padding-bottom: 4px; border-bottom: 2px solid transparent; } .ds-nav-link-active { border-bottom-color: oklch(0.56 0.19 25); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Screening Room",
+    "overview": "HallWay Creative is a private screening room, not a storefront. The room is dark by default — near-black walls, no glare — because that's the condition under which photography and film actually read as intentional rather than decorative. Into that dark room, exactly one signal is allowed to be loud: the tally light, the red indicator that lights up on a video camera the instant it starts recording. Everywhere else, the interface stays quiet, deferential, out of the way, so the work fills the frame. This system explicitly rejects the photographer-template playbook: no stock-photo hero carousels, no \"trusted by\" logo rows, no SaaS hero-metric stat blocks, no tiny uppercase eyebrows stamped above every section, no gradient text, no side-stripe accent borders, no identical icon-card grids. Confidence here comes from restraint, not volume. Light mode exists as a fully realized second surface — daylight through the same screening room, same identity, same tally-light red — for contexts where dark isn't wanted. It is not a stripped-down fallback; every rule applies to both.",
+    "keyCharacteristics": [
+      "Near-black resting state; pure white as the fully-realized light counterpart.",
+      "One saturated accent (the tally-light red), used on under ~10% of any given screen.",
+      "Editorial serif display type (Fraunces) carries all the personality; body/UI type (Inter) stays quiet.",
+      "Flat by default. Depth comes from tonal layering, not drop shadows."
+    ],
+    "rules": [
+      { "name": "The One Light Rule", "body": "Tally-Light Red appears in at most one place per screen at rest (a CTA, an active tab). If a second red shows up, one of the two is wrong.", "section": "colors" },
+      { "name": "The No-Tint Rule", "body": "Neutrals stay chroma-0 (true black/white/grey) in both themes. Warmth and mood come from the red and the serif display type, never from tinting the background.", "section": "colors" },
+      { "name": "The Title-Card Rule", "body": "Fraunces is reserved for Display and Headline roles only. It never appears in body copy, buttons, or UI chrome.", "section": "typography" },
+      { "name": "The Sentence-Case Rule", "body": "No uppercase tracked labels/eyebrows anywhere in the system. Labels use sentence case with light positive tracking.", "section": "typography" },
+      { "name": "The Flat-By-Default Rule", "body": "Surfaces are flat at rest. A shadow appears only when something is genuinely floating above the page (a lightbox, an open mobile menu) — never as decoration on a static card.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do let the photograph be the largest, highest-contrast element on every screen it appears on.",
+      "Do reserve Tally-Light Red for exactly one purpose per screen.",
+      "Do use Fraunces only for Display and Headline roles; everything else is Inter.",
+      "Do build both themes (dark default, light available) to the same standard.",
+      "Do support prefers-reduced-motion with an instant/crossfade fallback on every reveal."
+    ],
+    "donts": [
+      "Don't add a stock-photo hero carousel, testimonial carousel, or 'trusted by' logo row.",
+      "Don't use SaaS hero-metric stat blocks or feature-grid cards repeated identically.",
+      "Don't add a tiny uppercase tracked eyebrow above sections.",
+      "Don't use gradient text or background-clip: text for emphasis.",
+      "Don't use border-left/border-right as a colored accent stripe.",
+      "Don't use numbered 01/02/03 markers as decorative scaffolding.",
+      "Don't tint the neutral background toward cream, navy, or any hue 'for warmth'.",
+      "Don't drop a shadow on a static card."
+    ]
+  }
+}
