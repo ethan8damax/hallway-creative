@@ -4,8 +4,7 @@ import { useState } from 'react'
 
 export type UploadResult = { key: string; url: string; previewUrl: string; width: number; height: number }
 
-async function downscale(file: File, maxWidth: number): Promise<Blob> {
-  const bitmap = await createImageBitmap(file)
+function downscale(bitmap: ImageBitmap, maxWidth: number): Promise<Blob> {
   const scale = Math.min(1, maxWidth / bitmap.width)
   const canvas = document.createElement('canvas')
   canvas.width = Math.round(bitmap.width * scale)
@@ -20,35 +19,51 @@ async function uploadOne(file: Blob, filename: string, contentType: string, pref
     method: 'POST',
     body: JSON.stringify({ filename, contentType, prefix }),
   })
+  if (!presignResponse.ok) {
+    throw new Error(`Failed to get an upload URL for ${filename}`)
+  }
   const { uploadUrl, key, publicUrl } = await presignResponse.json()
-  await fetch(uploadUrl, { method: 'PUT', body: file, headers: { 'Content-Type': contentType } })
+  const putResponse = await fetch(uploadUrl, { method: 'PUT', body: file, headers: { 'Content-Type': contentType } })
+  if (!putResponse.ok) {
+    throw new Error(`Failed to upload ${filename}`)
+  }
   return { key, url: publicUrl }
 }
 
 export function UploadZone({ prefix, onUploaded }: { prefix: string; onUploaded: (result: UploadResult) => void }) {
   const [uploading, setUploading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   async function handleFiles(files: FileList) {
     setUploading(true)
-    for (const file of Array.from(files)) {
-      const bitmap = await createImageBitmap(file)
-      const preview = await downscale(file, 1600)
-      const original = await uploadOne(file, file.name, file.type, prefix)
-      const previewUpload = await uploadOne(preview, `preview-${file.name}`, 'image/jpeg', prefix)
-      onUploaded({
-        key: original.key,
-        url: original.url,
-        previewUrl: previewUpload.url,
-        width: bitmap.width,
-        height: bitmap.height,
-      })
+    setError(null)
+    try {
+      for (const file of Array.from(files)) {
+        const bitmap = await createImageBitmap(file)
+        const preview = await downscale(bitmap, 1600)
+        const [original, previewUpload] = await Promise.all([
+          uploadOne(file, file.name, file.type, prefix),
+          uploadOne(preview, `preview-${file.name}`, 'image/jpeg', prefix),
+        ])
+        onUploaded({
+          key: original.key,
+          url: original.url,
+          previewUrl: previewUpload.url,
+          width: bitmap.width,
+          height: bitmap.height,
+        })
+      }
+    } catch {
+      setError('Upload failed. Check your connection and try again.')
+    } finally {
+      setUploading(false)
     }
-    setUploading(false)
   }
 
   return (
     <label className="flex cursor-pointer flex-col items-center justify-center rounded-xs border border-dashed border-border bg-surface p-10 text-center text-muted transition-colors hover:border-tally">
       {uploading ? 'Uploading…' : 'Drop photos here or click to select'}
+      {error && <span className="mt-2 text-sm text-[var(--tally-red-text)]">{error}</span>}
       <input
         type="file"
         accept="image/*"
