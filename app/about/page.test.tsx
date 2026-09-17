@@ -1,13 +1,17 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import AboutPage from './page'
-import * as queries from '@/lib/sanity/queries'
+import * as queries from '@/lib/supabase/queries'
 
-vi.mock('@/lib/sanity/queries')
+vi.mock('@/lib/supabase/queries')
 
 describe('AboutPage', () => {
   it('renders the bio when present', async () => {
-    vi.mocked(queries.getAbout).mockResolvedValue({ bio: 'Andrew has been shooting for 10 years.' })
+    vi.mocked(queries.getAbout).mockResolvedValue({
+      id: '1',
+      bio: 'Andrew has been shooting for 10 years.',
+      portrait_url: null,
+    })
 
     render(await AboutPage())
 
@@ -24,8 +28,9 @@ describe('AboutPage', () => {
 
   it('renders the portrait image when present', async () => {
     vi.mocked(queries.getAbout).mockResolvedValue({
+      id: '1',
       bio: 'Andrew has been shooting for 10 years.',
-      portrait: { asset: { _ref: 'image-abcdef1234567890abcdef1234567890abcdef12-600x750-jpg', _type: 'reference' } },
+      portrait_url: 'https://example.com/portrait.jpg',
     })
 
     render(await AboutPage())
@@ -33,8 +38,12 @@ describe('AboutPage', () => {
     expect(screen.getByRole('img', { name: 'Andrew Hall' })).toBeInTheDocument()
   })
 
-  it('renders without an image when the portrait ref is malformed', async () => {
-    vi.mocked(queries.getAbout).mockResolvedValue({ bio: 'Andrew has been shooting for 10 years.', portrait: {} })
+  it('renders without an image when there is no portrait url', async () => {
+    vi.mocked(queries.getAbout).mockResolvedValue({
+      id: '1',
+      bio: 'Andrew has been shooting for 10 years.',
+      portrait_url: null,
+    })
 
     render(await AboutPage())
 

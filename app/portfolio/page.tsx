@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { getCategories } from '@/lib/sanity/queries'
+import { getCategories } from '@/lib/supabase/queries'
 import { PlaceholderTile } from '@/components/PlaceholderTile'
 
 export default async function PortfolioPage() {
@@ -13,7 +13,7 @@ export default async function PortfolioPage() {
       <div className="mt-12 grid grid-cols-1 gap-10 sm:grid-cols-3">
         {categories.length > 0 ? (
           categories.map((category) => (
-            <Link key={category._id} href={`/portfolio/${category.slug}`} className="group block">
+            <Link key={category.id} href={`/portfolio/${category.slug}`} className="group block">
               <div className="overflow-hidden rounded-xs transition-transform duration-[400ms] ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-[1.02]">
                 <PlaceholderTile />
               </div>

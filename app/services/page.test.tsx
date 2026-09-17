@@ -1,14 +1,14 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import ServicesPage from './page'
-import * as queries from '@/lib/sanity/queries'
+import * as queries from '@/lib/supabase/queries'
 
-vi.mock('@/lib/sanity/queries')
+vi.mock('@/lib/supabase/queries')
 
 describe('ServicesPage', () => {
   it('renders service titles and descriptions', async () => {
     vi.mocked(queries.getServices).mockResolvedValue([
-      { _id: '1', title: 'Wedding Photography', description: 'Full-day coverage.', order: 0 },
+      { id: '1', title: 'Wedding Photography', description: 'Full-day coverage.', category_id: null, sort_order: 0 },
     ])
 
     render(await ServicesPage())

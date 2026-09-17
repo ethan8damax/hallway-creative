@@ -4,7 +4,7 @@ import Script from "next/script";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { getSiteSettings } from "@/lib/sanity/queries";
+import { getSiteSettings } from "@/lib/supabase/queries";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",

@@ -1,15 +1,21 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import HomePage from './page'
-import * as queries from '@/lib/sanity/queries'
+import * as queries from '@/lib/supabase/queries'
 
-vi.mock('@/lib/sanity/queries')
+vi.mock('@/lib/supabase/queries')
 
 describe('HomePage', () => {
   it('renders the hero headline and category links', async () => {
-    vi.mocked(queries.getSiteSettings).mockResolvedValue({ heroHeadline: 'Moments, captured', contactEmail: 'a@b.com' })
+    vi.mocked(queries.getSiteSettings).mockResolvedValue({
+      id: '1',
+      hero_headline: 'Moments, captured',
+      hero_subtext: null,
+      contact_email: 'a@b.com',
+      instagram_url: null,
+    })
     vi.mocked(queries.getCategories).mockResolvedValue([
-      { _id: '1', title: 'Sports', slug: 'sports', order: 0 },
+      { id: '1', title: 'Sports', slug: 'sports', description: null, sort_order: 0 },
     ])
 
     render(await HomePage())
