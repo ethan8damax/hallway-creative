@@ -8,22 +8,23 @@ vi.mock('./service', () => ({
 import { createServiceClient } from './service'
 
 function mockQueryResult(data: unknown) {
-  return {
-    from: vi.fn().mockReturnValue({
-      select: vi.fn().mockReturnValue({
-        order: vi.fn().mockResolvedValue({ data, error: null }),
-      }),
-    }),
-  }
+  const order = vi.fn().mockResolvedValue({ data, error: null })
+  const select = vi.fn().mockReturnValue({ order })
+  const from = vi.fn().mockReturnValue({ select })
+  return { client: { from }, from, select, order }
 }
 
 describe('getCategories', () => {
-  it('returns categories ordered by sort_order', async () => {
+  it('queries the categories table ordered by sort_order ascending', async () => {
     const categories = [{ id: '1', title: 'Sports', slug: 'sports', description: null, sort_order: 0 }]
-    vi.mocked(createServiceClient).mockReturnValue(mockQueryResult(categories) as never)
+    const { client, from, select, order } = mockQueryResult(categories)
+    vi.mocked(createServiceClient).mockReturnValue(client as never)
 
     const result = await getCategories()
 
     expect(result).toEqual(categories)
+    expect(from).toHaveBeenCalledWith('categories')
+    expect(select).toHaveBeenCalledWith('*')
+    expect(order).toHaveBeenCalledWith('sort_order', { ascending: true })
   })
 })
