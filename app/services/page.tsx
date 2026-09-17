@@ -2,7 +2,7 @@ import { getServices } from '@/lib/supabase/queries'
 
 export default async function ServicesPage() {
   // ponytail: matches the outage-handling pattern in app/page.tsx and
-  // app/portfolio/page.tsx — a Sanity hiccup degrades to the empty state.
+  // app/portfolio/page.tsx — a Supabase hiccup degrades to the empty state.
   const services = await getServices().catch(() => [])
 
   return (

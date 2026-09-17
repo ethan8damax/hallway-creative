@@ -4,7 +4,7 @@ import { PlaceholderTile } from '@/components/PlaceholderTile'
 
 export default async function PortfolioPage() {
   // ponytail: matches the outage-handling pattern in app/page.tsx — a
-  // Sanity hiccup degrades to the empty state, not a dead page.
+  // Supabase hiccup degrades to the empty state, not a dead page.
   const categories = await getCategories().catch(() => [])
 
   return (

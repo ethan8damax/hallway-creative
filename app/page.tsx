@@ -4,7 +4,7 @@ import { PlaceholderTile } from '@/components/PlaceholderTile'
 
 export default async function HomePage() {
   // ponytail: matches the outage-handling pattern in app/layout.tsx — a
-  // Sanity hiccup degrades to fallback copy, not a dead homepage.
+  // Supabase hiccup degrades to fallback copy, not a dead homepage.
   const [settings, categories] = await Promise.all([
     getSiteSettings().catch(() => null),
     getCategories().catch(() => []),
