@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { getCategoryBySlug, getMediaItemsForCategory } from '@/lib/sanity/queries'
+import { getCategoryBySlug, getMediaItemsForCategory } from '@/lib/supabase/queries'
 import { MediaGrid } from '@/components/MediaGrid'
 
 export default async function CategoryPage({ params }: { params: Promise<{ category: string }> }) {
@@ -13,7 +13,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
     notFound()
   }
 
-  const items = await getMediaItemsForCategory(category._id).catch(() => [])
+  const items = await getMediaItemsForCategory(category.id).catch(() => [])
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-24">

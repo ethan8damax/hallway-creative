@@ -6,7 +6,7 @@ brand
 
 ## Users
 
-Prospective clients — engaged couples, sports teams/athletes, event organizers — researching photographers/videographers to hire. They arrive from a referral, social, or search, and need to believe Andrew's work is high-quality and diverse before they'll reach out. Secondary user: Andrew himself, who self-serves content updates through Sanity Studio without needing a code change.
+Prospective clients — engaged couples, sports teams/athletes, event organizers — researching photographers/videographers to hire. They arrive from a referral, social, or search, and need to believe Andrew's work is high-quality and diverse before they'll reach out. Secondary user: Andrew himself, who self-serves content updates through the `/admin` dashboard without needing a code change.
 
 ## Product Purpose
 

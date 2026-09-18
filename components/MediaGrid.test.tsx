@@ -10,7 +10,21 @@ describe('MediaGrid', () => {
   })
 
   it('renders no placeholder tiles when items are present', () => {
-    render(<MediaGrid items={[{ _id: '1', mediaType: 'image', image: {}, order: 0 }]} />)
+    render(
+      <MediaGrid
+        items={[
+          {
+            id: '1',
+            media_type: 'image',
+            image_url: 'https://example.com/image.jpg',
+            preview_url: null,
+            video_url: null,
+            caption: null,
+            sort_order: 0,
+          },
+        ]}
+      />
+    )
 
     expect(screen.queryByText('Photo coming soon')).not.toBeInTheDocument()
   })

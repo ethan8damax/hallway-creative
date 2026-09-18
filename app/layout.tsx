@@ -4,7 +4,7 @@ import Script from "next/script";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { getSiteSettings } from "@/lib/sanity/queries";
+import { getSiteSettings } from "@/lib/supabase/queries";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
-  // ponytail: a Sanity outage degrades to a footer with no contact links,
+  // ponytail: a Supabase outage degrades to a footer with no contact links,
   // not a dead site — every page renders inside this layout.
   const settings = await getSiteSettings().catch((error) => {
     console.error("Failed to fetch site settings", error);
