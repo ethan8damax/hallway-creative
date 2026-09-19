@@ -25,7 +25,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ slu
   }
 
   const response = NextResponse.json({ ok: true })
-  response.cookies.set(`gallery_access_${slug}`, signGalleryToken(slug), {
+  response.cookies.set(`gallery_access_${slug}`, signGalleryToken(slug, gallery.access_code_hash), {
     httpOnly: true,
     secure: true,
     sameSite: 'lax',

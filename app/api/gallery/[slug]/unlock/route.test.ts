@@ -50,7 +50,7 @@ describe('POST /api/gallery/[slug]/unlock', () => {
     const setCookie = response.headers.get('set-cookie')
 
     expect(response.status).toBe(200)
-    expect(setCookie).toContain(`gallery_access_sunset-wedding=${signGalleryToken('sunset-wedding')}`)
+    expect(setCookie).toContain(`gallery_access_sunset-wedding=${signGalleryToken('sunset-wedding', 'hash')}`)
     // ponytail: guards against regressing back to the old forgeable literal
     // 'unlocked' string — anyone could set that value on a raw request.
     expect(setCookie).not.toContain('gallery_access_sunset-wedding=unlocked')

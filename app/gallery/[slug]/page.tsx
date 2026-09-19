@@ -21,7 +21,7 @@ export default async function GalleryPage({ params }: { params: Promise<{ slug: 
   }
 
   const cookieStore = await cookies()
-  const unlocked = verifyGalleryToken(slug, cookieStore.get(`gallery_access_${slug}`)?.value)
+  const unlocked = verifyGalleryToken(slug, gallery.access_code_hash, cookieStore.get(`gallery_access_${slug}`)?.value)
 
   if (!unlocked) {
     return <UnlockForm slug={slug} />
