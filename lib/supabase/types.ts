@@ -37,3 +37,29 @@ export type SiteSettings = {
   contact_email: string | null
   instagram_url: string | null
 }
+
+export type Gallery = {
+  id: string
+  title: string
+  client_name: string
+  client_email: string
+  slug: string
+  event_date: string | null
+  access_code_hash: string
+  status: 'draft' | 'published'
+  sent_at: string | null
+  created_at: string
+}
+
+export type Photo = {
+  id: string
+  gallery_id: string
+  r2_key: string
+  url: string
+  preview_url: string
+  width: number | null
+  height: number | null
+  filename: string | null
+  sort_order: number
+  created_at: string
+}

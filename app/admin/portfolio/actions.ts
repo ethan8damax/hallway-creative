@@ -2,19 +2,13 @@
 
 import { revalidatePath } from 'next/cache'
 import { createServiceClient } from '@/lib/supabase/service'
+import { slugify, isDuplicateSlugError } from '@/lib/slugify'
 import type { MediaItem } from '@/lib/supabase/types'
-
-function slugify(title: string): string {
-  return title.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
-}
 
 export async function createCategory(title: string) {
   const { error } = await createServiceClient().from('categories').insert({ title, slug: slugify(title), sort_order: 0 })
   if (error) {
-    // ponytail: two titles that slugify to the same value ("Family Portraits!"
-    // vs "Family Portraits?") hit the `categories.slug` unique constraint —
-    // surface a plain message instead of a raw Postgres error code.
-    if (error.code === '23505') {
+    if (isDuplicateSlugError(error)) {
       throw new Error('A category with that name already exists.')
     }
     throw error
