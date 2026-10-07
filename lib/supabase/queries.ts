@@ -55,6 +55,12 @@ export async function getHeroCandidates(): Promise<HeroPhoto[]> {
     })
 }
 
+// A different frame leads the page on every request.
+export async function getRandomHeroPhoto(): Promise<HeroPhoto | null> {
+  const candidates = await getHeroCandidates()
+  return candidates.length > 0 ? candidates[Math.floor(Math.random() * candidates.length)] : null
+}
+
 export async function getServices(): Promise<Service[]> {
   const { data, error } = await createServiceClient()
     .from('services')

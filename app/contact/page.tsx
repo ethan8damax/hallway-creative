@@ -1,15 +1,14 @@
 import Image from 'next/image'
 import { connection } from 'next/server'
 import { ContactForm } from '@/components/ContactForm'
-import { getHeroCandidates, getSiteSettings } from '@/lib/supabase/queries'
+import { getRandomHeroPhoto, getSiteSettings } from '@/lib/supabase/queries'
 
 export default async function ContactPage() {
   await connection() // a different frame from the portfolio on each visit
-  const [settings, candidates] = await Promise.all([
+  const [settings, photo] = await Promise.all([
     getSiteSettings().catch(() => null),
-    getHeroCandidates().catch(() => []),
+    getRandomHeroPhoto().catch(() => null),
   ])
-  const photo = candidates.length > 0 ? candidates[Math.floor(Math.random() * candidates.length)] : null
 
   return (
     <div className="mx-auto grid max-w-[1600px] gap-12 px-5 pb-28 pt-10 sm:px-8 lg:grid-cols-2 lg:gap-20 lg:pt-16">

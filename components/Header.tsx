@@ -34,9 +34,6 @@ export function Header() {
     if (!menuOpen && dialog.open) dialog.close()
   }, [menuOpen])
 
-  // Close the menu on navigation.
-  useEffect(() => setMenuOpen(false), [pathname])
-
   // Homepage: only the wordmark sits over the hero photo; the nav arrives once
   // the visitor starts scrolling. Every other page shows it from the start.
   const navShown = !overHero || scrolled
@@ -99,7 +96,7 @@ export function Header() {
         className="m-0 h-dvh max-h-none w-screen max-w-none bg-bg p-0 text-ink"
       >
         <div className="flex items-center justify-between px-5 py-4">
-          <Link href="/" className="font-display text-xl">
+          <Link href="/" onClick={() => setMenuOpen(false)} className="font-display text-xl">
             HallWay Creative
           </Link>
           <button type="button" onClick={() => setMenuOpen(false)} className="text-sm font-medium">

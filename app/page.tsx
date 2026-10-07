@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { connection } from 'next/server'
-import { getAbout, getCategories, getHeroCandidates, getSiteSettings } from '@/lib/supabase/queries'
+import { getAbout, getCategories, getRandomHeroPhoto, getSiteSettings } from '@/lib/supabase/queries'
 import { CategoryBands } from '@/components/CategoryBands'
 import { SayHello } from '@/components/SayHello'
 
@@ -12,13 +12,12 @@ export default async function HomePage() {
 
   // ponytail: matches the outage-handling pattern in app/layout.tsx — a
   // Supabase hiccup degrades to fallback copy, not a dead homepage.
-  const [settings, categories, about, candidates] = await Promise.all([
+  const [settings, categories, about, hero] = await Promise.all([
     getSiteSettings().catch(() => null),
     getCategories().catch(() => []),
     getAbout().catch(() => null),
-    getHeroCandidates().catch(() => []),
+    getRandomHeroPhoto().catch(() => null),
   ])
-  const hero = candidates.length > 0 ? candidates[Math.floor(Math.random() * candidates.length)] : null
   const bioLead = about?.bio?.split(/\n\s*\n/)[0]
 
   return (

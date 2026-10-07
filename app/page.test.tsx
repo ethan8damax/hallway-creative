@@ -8,9 +8,12 @@ vi.mock('next/server', () => ({ connection: vi.fn() }))
 
 beforeEach(() => {
   vi.mocked(queries.getAbout).mockResolvedValue(null)
-  vi.mocked(queries.getHeroCandidates).mockResolvedValue([
-    { url: 'https://x.r2.dev/hero.jpg', caption: 'Game winner', categoryTitle: 'Sports', categorySlug: 'sports' },
-  ])
+  vi.mocked(queries.getRandomHeroPhoto).mockResolvedValue({
+    url: 'https://x.r2.dev/hero.jpg',
+    caption: 'Game winner',
+    categoryTitle: 'Sports',
+    categorySlug: 'sports',
+  })
 })
 
 describe('HomePage', () => {
