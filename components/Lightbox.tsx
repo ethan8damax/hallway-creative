@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 export type LightboxItem = { src: string; alt: string; downloadUrl?: string; filename?: string }
 
@@ -48,6 +48,27 @@ export function Lightbox({
     }
   }, [index, count, items])
 
+  const [downloading, setDownloading] = useState(false)
+
+  // The `download` attribute is ignored cross-origin (photos live on R2), so
+  // fetch the file and hand the browser a same-origin blob to save.
+  async function download(target: LightboxItem) {
+    setDownloading(true)
+    try {
+      const blob = await (await fetch(target.downloadUrl!)).blob()
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = target.filename ?? 'photo.jpg'
+      a.click()
+      URL.revokeObjectURL(url)
+    } catch {
+      window.open(target.downloadUrl, '_blank', 'noopener')
+    } finally {
+      setDownloading(false)
+    }
+  }
+
   const item = index !== null ? items[index] : null
   const step = (delta: number) => index !== null && onIndexChange((index + delta + count) % count)
 
@@ -73,9 +94,14 @@ export function Lightbox({
             </span>
             <div className="flex items-center gap-6">
               {item.downloadUrl && (
-                <a href={item.downloadUrl} download={item.filename} className="font-medium underline-offset-4 hover:underline">
-                  Download
-                </a>
+                <button
+                  type="button"
+                  onClick={() => download(item)}
+                  disabled={downloading}
+                  className="font-medium underline-offset-4 hover:underline disabled:opacity-60"
+                >
+                  {downloading ? 'Saving…' : 'Download'}
+                </button>
               )}
               <button type="button" onClick={onClose} className="font-medium" autoFocus>
                 Close

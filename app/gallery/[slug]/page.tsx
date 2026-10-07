@@ -25,7 +25,7 @@ export default async function GalleryPage({ params }: { params: Promise<{ slug: 
   const unlocked = verifyGalleryToken(slug, gallery.access_code_hash, cookieStore.get(`gallery_access_${slug}`)?.value)
 
   if (!unlocked) {
-    return <UnlockForm slug={slug} />
+    return <UnlockForm slug={slug} title={gallery.title} />
   }
 
   const { data: photos } = await supabase
@@ -34,5 +34,5 @@ export default async function GalleryPage({ params }: { params: Promise<{ slug: 
     .eq('gallery_id', gallery.id)
     .order('sort_order', { ascending: true })
 
-  return <GalleryView title={gallery.title} photos={(photos ?? []) as Photo[]} />
+  return <GalleryView gallery={gallery} photos={(photos ?? []) as Photo[]} />
 }
