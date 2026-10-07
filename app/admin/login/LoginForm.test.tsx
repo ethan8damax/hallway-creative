@@ -3,23 +3,32 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { LoginForm } from './LoginForm'
 
-const signInWithOtp = vi.fn().mockResolvedValue({ error: null })
+const signInWithPassword = vi.fn()
+const push = vi.fn()
 vi.mock('@/lib/supabase/client', () => ({
-  createClient: () => ({ auth: { signInWithOtp } }),
+  createClient: () => ({ auth: { signInWithPassword } }),
 }))
+vi.mock('next/navigation', () => ({ useRouter: () => ({ push, refresh: vi.fn() }) }))
+
+async function submit() {
+  render(<LoginForm />)
+  const user = userEvent.setup()
+  await user.type(screen.getByLabelText('Email'), 'andrew@example.com')
+  await user.type(screen.getByLabelText('Password'), 'secret')
+  await user.click(screen.getByRole('button', { name: 'Sign in' }))
+}
 
 describe('LoginForm', () => {
-  it('sends a magic link and shows a confirmation message', async () => {
-    render(<LoginForm />)
-    const user = userEvent.setup()
+  it('signs in with email and password and goes to /admin', async () => {
+    signInWithPassword.mockResolvedValueOnce({ error: null })
+    await submit()
+    expect(signInWithPassword).toHaveBeenCalledWith({ email: 'andrew@example.com', password: 'secret' })
+    expect(push).toHaveBeenCalledWith('/admin')
+  })
 
-    await user.type(screen.getByLabelText('Email'), 'andrew@example.com')
-    await user.click(screen.getByRole('button', { name: 'Send magic link' }))
-
-    expect(signInWithOtp).toHaveBeenCalledWith({
-      email: 'andrew@example.com',
-      options: { emailRedirectTo: expect.stringContaining('/admin/auth/callback') },
-    })
-    expect(await screen.findByText('Check your email for a login link.')).toBeInTheDocument()
+  it('shows an error on bad credentials', async () => {
+    signInWithPassword.mockResolvedValueOnce({ error: { message: 'Invalid login credentials' } })
+    await submit()
+    expect(await screen.findByText('Wrong email or password.')).toBeInTheDocument()
   })
 })

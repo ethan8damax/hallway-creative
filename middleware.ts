@@ -5,7 +5,7 @@ export async function middleware(request: NextRequest) {
   if (!request.nextUrl.pathname.startsWith('/admin')) {
     return NextResponse.next()
   }
-  if (request.nextUrl.pathname === '/admin/login' || request.nextUrl.pathname.startsWith('/admin/auth/callback')) {
+  if (request.nextUrl.pathname === '/admin/login') {
     return NextResponse.next()
   }
 
