@@ -4,6 +4,7 @@ export type Category = {
   slug: string
   description: string | null
   sort_order: number
+  cover_url?: string | null
 }
 
 export type MediaItem = {

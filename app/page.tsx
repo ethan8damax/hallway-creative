@@ -32,7 +32,7 @@ export default async function HomePage() {
             categories.map((category) => (
               <Link key={category.id} href={`/portfolio/${category.slug}`} className="group block">
                 <div className="overflow-hidden rounded-xs transition-transform duration-[400ms] ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-[1.02]">
-                  <PlaceholderTile />
+                  <PlaceholderTile src={category.cover_url} />
                 </div>
                 <h3 className="mt-4 font-display text-xl text-ink transition-colors group-hover:text-tally-text">
                   {category.title}

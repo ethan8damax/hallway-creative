@@ -4,10 +4,17 @@ import type { Category, MediaItem, Service, About, SiteSettings } from './types'
 export async function getCategories(): Promise<Category[]> {
   const { data, error } = await createServiceClient()
     .from('categories')
-    .select('*')
+    .select('*, portfolio_media(preview_url)')
     .order('sort_order', { ascending: true })
+    .not('portfolio_media.preview_url', 'is', null)
+    .order('sort_order', { referencedTable: 'portfolio_media', ascending: true })
+    .limit(1, { referencedTable: 'portfolio_media' })
   if (error) throw error
-  return (data ?? []) as Category[]
+  // ponytail: cover = first media item with a preview image, for the category tiles
+  return (data ?? []).map(({ portfolio_media, ...category }) => ({
+    ...category,
+    cover_url: portfolio_media?.[0]?.preview_url ?? null,
+  })) as Category[]
 }
 
 export async function getCategoryBySlug(slug: string): Promise<Category | null> {
