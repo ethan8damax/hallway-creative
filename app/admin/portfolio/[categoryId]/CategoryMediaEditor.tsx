@@ -14,6 +14,8 @@ export function CategoryMediaEditor({ categoryId, initialItems }: { categoryId: 
       r2_key: result.key,
       image_url: result.url,
       preview_url: result.previewUrl,
+      width: result.width,
+      height: result.height,
     })
     setItems((current) => [...current, item])
   }

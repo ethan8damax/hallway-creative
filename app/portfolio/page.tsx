@@ -1,6 +1,6 @@
-import Link from 'next/link'
 import { getCategories } from '@/lib/supabase/queries'
-import { PlaceholderTile } from '@/components/PlaceholderTile'
+import { CategoryBands } from '@/components/CategoryBands'
+import { SayHello } from '@/components/SayHello'
 
 export default async function PortfolioPage() {
   // ponytail: matches the outage-handling pattern in app/page.tsx — a
@@ -8,27 +8,20 @@ export default async function PortfolioPage() {
   const categories = await getCategories().catch(() => [])
 
   return (
-    <div className="mx-auto max-w-6xl px-6 py-24">
-      <h1 className="font-display text-4xl text-ink">Portfolio</h1>
-      <div className="mt-12 grid grid-cols-1 gap-10 sm:grid-cols-3">
-        {categories.length > 0 ? (
-          categories.map((category) => (
-            <Link key={category.id} href={`/portfolio/${category.slug}`} className="group block">
-              <div className="overflow-hidden rounded-xs transition-transform duration-[400ms] ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-[1.02]">
-                <PlaceholderTile src={category.cover_url} />
-              </div>
-              <h2 className="mt-4 font-display text-xl text-ink transition-colors group-hover:text-tally-text">
-                {category.title}
-              </h2>
-              {category.description && <p className="mt-2 text-sm text-muted">{category.description}</p>}
-            </Link>
-          ))
-        ) : (
-          <p className="col-span-full bg-surface py-16 text-center text-lg text-muted">
-            New galleries coming soon — check back shortly.
-          </p>
-        )}
-      </div>
+    <div>
+      <header className="mx-auto max-w-[1600px] px-5 pb-12 pt-20 sm:px-8 sm:pb-16 sm:pt-28">
+        <h1 className="hero-rise font-display text-[clamp(3rem,8vw,6rem)] font-[340] leading-[0.95] tracking-[-0.025em] text-ink">
+          Portfolio
+        </h1>
+      </header>
+      {categories.length > 0 ? (
+        <CategoryBands categories={categories} headingLevel="h2" />
+      ) : (
+        <p className="mx-auto max-w-[1600px] bg-surface px-6 py-16 text-center text-lg text-muted">
+          New galleries coming soon — check back shortly.
+        </p>
+      )}
+      <SayHello />
     </div>
   )
 }

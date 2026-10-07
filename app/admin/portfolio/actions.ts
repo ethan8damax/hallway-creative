@@ -21,7 +21,7 @@ export async function createCategory(title: string) {
 
 export async function addMediaItem(
   categoryId: string,
-  fields: { media_type: 'image' | 'video'; r2_key?: string; image_url?: string; preview_url?: string; video_url?: string; caption?: string }
+  fields: { media_type: 'image' | 'video'; r2_key?: string; image_url?: string; preview_url?: string; video_url?: string; caption?: string; width?: number; height?: number }
 ): Promise<MediaItem> {
   await requireAdmin()
   const { data, error } = await createServiceClient()
