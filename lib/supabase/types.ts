@@ -14,6 +14,8 @@ export type MediaItem = {
   preview_url: string | null
   video_url: string | null
   caption: string | null
+  width: number | null
+  height: number | null
   sort_order: number
 }
 

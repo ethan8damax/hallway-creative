@@ -37,6 +37,24 @@ export async function getMediaItemsForCategory(categoryId: string): Promise<Medi
   return (data ?? []) as MediaItem[]
 }
 
+export type HeroPhoto = { url: string; caption: string | null; categoryTitle: string; categorySlug: string }
+
+// Every landscape portfolio photo is a hero candidate; the caller picks one per request.
+export async function getHeroCandidates(): Promise<HeroPhoto[]> {
+  const { data, error } = await createServiceClient()
+    .from('portfolio_media')
+    .select('image_url, caption, width, height, categories(title, slug)')
+    .eq('media_type', 'image')
+    .not('image_url', 'is', null)
+  if (error) throw error
+  return (data ?? [])
+    .filter((row) => !row.width || !row.height || row.width >= row.height)
+    .map((row) => {
+      const category = row.categories as unknown as { title: string; slug: string }
+      return { url: row.image_url!, caption: row.caption, categoryTitle: category.title, categorySlug: category.slug }
+    })
+}
+
 export async function getServices(): Promise<Service[]> {
   const { data, error } = await createServiceClient()
     .from('services')
