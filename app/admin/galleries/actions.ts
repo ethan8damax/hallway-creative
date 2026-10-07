@@ -2,11 +2,13 @@
 
 import { revalidatePath } from 'next/cache'
 import { createServiceClient } from '@/lib/supabase/service'
+import { requireAdmin } from '@/lib/admin'
 import { hashAccessCode } from '@/lib/accessCode'
 import { slugify, isDuplicateSlugError } from '@/lib/slugify'
 import type { Photo } from '@/lib/supabase/types'
 
 export async function createGallery(input: { title: string; clientName: string; clientEmail: string; eventDate: string; accessCode: string }) {
+  await requireAdmin()
   if (!input.accessCode.trim()) {
     throw new Error('Access code is required.')
   }
@@ -34,6 +36,7 @@ export async function addPhoto(
   galleryId: string,
   fields: { r2_key: string; url: string; preview_url: string; width: number; height: number; filename: string }
 ): Promise<Photo> {
+  await requireAdmin()
   const { data, error } = await createServiceClient()
     .from('photos')
     .insert({ gallery_id: galleryId, sort_order: 0, ...fields })
@@ -45,12 +48,14 @@ export async function addPhoto(
 }
 
 export async function deletePhoto(id: string, galleryId: string) {
+  await requireAdmin()
   const { error } = await createServiceClient().from('photos').delete().eq('id', id).eq('gallery_id', galleryId)
   if (error) throw error
   revalidatePath(`/admin/galleries/${galleryId}`)
 }
 
 export async function togglePublish(id: string, status: 'draft' | 'published') {
+  await requireAdmin()
   const { error } = await createServiceClient().from('galleries').update({ status }).eq('id', id)
   if (error) throw error
   revalidatePath(`/admin/galleries/${id}`)

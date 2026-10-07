@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
+import { isAdminEmail } from '@/lib/admin'
 
 export async function middleware(request: NextRequest) {
   if (!request.nextUrl.pathname.startsWith('/admin')) {
@@ -30,7 +31,7 @@ export async function middleware(request: NextRequest) {
 
   const { data } = await supabase.auth.getUser()
 
-  if (!data.user) {
+  if (!isAdminEmail(data.user?.email)) {
     return NextResponse.redirect(new URL('/admin/login', request.url))
   }
 

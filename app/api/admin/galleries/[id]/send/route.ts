@@ -1,12 +1,13 @@
 import { NextResponse } from 'next/server'
 import { Resend } from 'resend'
 import { createClient } from '@/lib/supabase/server'
+import { isAdminEmail } from '@/lib/admin'
 import { createServiceClient } from '@/lib/supabase/service'
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const supabase = await createClient()
   const { data: userData } = await supabase.auth.getUser()
-  if (!userData.user) {
+  if (!isAdminEmail(userData.user?.email)) {
     return NextResponse.json({ error: 'unauthenticated' }, { status: 401 })
   }
 

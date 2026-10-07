@@ -2,10 +2,12 @@
 
 import { revalidatePath } from 'next/cache'
 import { createServiceClient } from '@/lib/supabase/service'
+import { requireAdmin } from '@/lib/admin'
 import { slugify, isDuplicateSlugError } from '@/lib/slugify'
 import type { MediaItem } from '@/lib/supabase/types'
 
 export async function createCategory(title: string) {
+  await requireAdmin()
   const { error } = await createServiceClient().from('categories').insert({ title, slug: slugify(title), sort_order: 0 })
   if (error) {
     if (isDuplicateSlugError(error)) {
@@ -21,6 +23,7 @@ export async function addMediaItem(
   categoryId: string,
   fields: { media_type: 'image' | 'video'; r2_key?: string; image_url?: string; preview_url?: string; video_url?: string; caption?: string }
 ): Promise<MediaItem> {
+  await requireAdmin()
   const { data, error } = await createServiceClient()
     .from('portfolio_media')
     .insert({ category_id: categoryId, sort_order: 0, ...fields })
@@ -32,6 +35,7 @@ export async function addMediaItem(
 }
 
 export async function deleteMediaItem(id: string) {
+  await requireAdmin()
   const { error } = await createServiceClient().from('portfolio_media').delete().eq('id', id)
   if (error) throw error
   revalidatePath('/portfolio')

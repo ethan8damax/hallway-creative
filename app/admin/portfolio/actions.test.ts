@@ -7,6 +7,7 @@ vi.mock('@/lib/supabase/service', () => ({
 // ponytail: revalidatePath throws outside a real Next.js request/render
 // context ("static generation store missing") — mock it so this test
 // isolates the action's own logic instead of Next's internals.
+vi.mock('@/lib/admin', () => ({ requireAdmin: vi.fn() }))
 vi.mock('next/cache', () => ({ revalidatePath: vi.fn() }))
 
 import { createCategory, addMediaItem } from './actions'

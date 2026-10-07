@@ -2,6 +2,7 @@ import { cookies } from 'next/headers'
 import { notFound } from 'next/navigation'
 import { createServiceClient } from '@/lib/supabase/service'
 import { createClient } from '@/lib/supabase/server'
+import { isAdminEmail } from '@/lib/admin'
 import { verifyGalleryToken } from '@/lib/gallerySession'
 import { UnlockForm } from './UnlockForm'
 import { GalleryView } from './GalleryView'
@@ -17,7 +18,7 @@ export default async function GalleryPage({ params }: { params: Promise<{ slug: 
   if (gallery.status === 'draft') {
     const adminClient = await createClient()
     const { data: userData } = await adminClient.auth.getUser()
-    if (!userData.user) notFound()
+    if (!isAdminEmail(userData.user?.email)) notFound()
   }
 
   const cookieStore = await cookies()

@@ -27,7 +27,7 @@ describe('POST /api/r2/presign', () => {
 
   it('returns a presigned URL for an authenticated request', async () => {
     vi.mocked(createClient).mockResolvedValue({
-      auth: { getUser: vi.fn().mockResolvedValue({ data: { user: { id: 'u1' } } }) },
+      auth: { getUser: vi.fn().mockResolvedValue({ data: { user: { id: 'u1', email: 'hallway.ah@gmail.com' } } }) },
     } as never)
 
     const response = await POST(requestWith({ filename: 'a.jpg', contentType: 'image/jpeg', prefix: 'portfolio/sports' }))
@@ -40,7 +40,7 @@ describe('POST /api/r2/presign', () => {
 
   it('rejects a non-image content type', async () => {
     vi.mocked(createClient).mockResolvedValue({
-      auth: { getUser: vi.fn().mockResolvedValue({ data: { user: { id: 'u1' } } }) },
+      auth: { getUser: vi.fn().mockResolvedValue({ data: { user: { id: 'u1', email: 'hallway.ah@gmail.com' } } }) },
     } as never)
 
     const response = await POST(requestWith({ filename: 'a.html', contentType: 'text/html', prefix: 'portfolio/sports' }))
@@ -50,7 +50,7 @@ describe('POST /api/r2/presign', () => {
 
   it('percent-encodes special characters in the returned publicUrl', async () => {
     vi.mocked(createClient).mockResolvedValue({
-      auth: { getUser: vi.fn().mockResolvedValue({ data: { user: { id: 'u1' } } }) },
+      auth: { getUser: vi.fn().mockResolvedValue({ data: { user: { id: 'u1', email: 'hallway.ah@gmail.com' } } }) },
     } as never)
 
     const response = await POST(

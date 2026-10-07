@@ -25,7 +25,7 @@ function requestParams() {
 const galleryRow = { title: 'Sunset Wedding', client_name: 'Jane', slug: 'sunset-wedding', client_email: 'jane@example.com' }
 
 function mockAuthenticated() {
-  vi.mocked(createClient).mockResolvedValue({ auth: { getUser: vi.fn().mockResolvedValue({ data: { user: { id: 'u1' } } }) } } as never)
+  vi.mocked(createClient).mockResolvedValue({ auth: { getUser: vi.fn().mockResolvedValue({ data: { user: { id: 'u1', email: 'hallway.ah@gmail.com' } } }) } } as never)
 }
 
 function mockGalleryLookup(result: { data: unknown; error: unknown }, update = vi.fn().mockReturnValue({ eq: vi.fn().mockResolvedValue({ error: null }) })) {
