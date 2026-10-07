@@ -1,9 +1,13 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import ServicesPage from './page'
 import * as queries from '@/lib/supabase/queries'
 
 vi.mock('@/lib/supabase/queries')
+
+beforeEach(() => {
+  vi.mocked(queries.getCategories).mockResolvedValue([])
+})
 
 describe('ServicesPage', () => {
   it('renders service titles and descriptions', async () => {

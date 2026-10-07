@@ -162,9 +162,19 @@ Flat by default. Depth is conveyed through tonal layering — Booth Grey / Print
 - **Error:** Border shifts to Tally-Light Red, with inline label-role error text below — the one place outside the CTA where red is allowed, because it's signaling the same thing (attention required now).
 
 ### Navigation (Header)
-- **Style:** Transparent over the hero, Screening Black/Gallery White at 90% opacity with backdrop-blur once scrolled past the hero. Label-role type, sentence case.
+- **Style:** On the homepage only the wordmark sits over the hero photo; the nav links arrive (fade + slide, `visibility`-gated so they're never focusable while hidden) once the visitor scrolls, and the bar turns Screening Black/Gallery White at 90% with backdrop-blur. Every other page shows the solid bar from the start. Label-role type, sentence case.
 - **Active state:** Current page link gets a Tally-Light Red underline (2px, `{rounded.sm}` offset) — the only other place red appears besides the CTA.
 - **Mobile:** Full-screen overlay menu (Screening Black/Gallery White, no transparency), Headline-role type for links, generous vertical spacing.
+
+### Photo layouts
+- **Category bands** (homepage, /portfolio): full-width 21:9 frames (4:5 on phones) stacked 6px apart like a film strip, title in Headline-role Fraunces over a bottom scrim. Text on photographs is always Projector White in both themes (`.on-photo` + `.photo-scrim`).
+- **Screening sequence** (category pages): photos grouped by real shape — every other landscape full-width alone, the rest in justified pairs/threes (`lib/screeningRows.ts`). Requires `width`/`height` on `portfolio_media`.
+- **Client galleries:** uncropped masonry columns — clients scan hundreds of frames, so density beats rhythm there.
+- **Lightbox:** native `<dialog>`, near-black, arrows/swipe/Esc, counter, per-photo download in galleries.
+- **Random hero:** the homepage (and contact page) pick a random landscape portfolio photo per request.
+
+### Motion
+- One choreographed load per page (hero image settles from 1.08 scale, headline rises). Scroll reveals are transform-only — never opacity — so a stalled scroll timeline can't hide photography. All of it is disabled under reduced motion.
 
 ### Empty / Placeholder State (PlaceholderTile)
 - Booth Grey/Print Grey surface, centered label-role text ("No photos yet"), no icon illustration — keeps the placeholder honest and unobtrusive rather than decorative.
