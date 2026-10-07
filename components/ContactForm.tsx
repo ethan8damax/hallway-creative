@@ -20,6 +20,8 @@ export function ContactForm() {
       name: String(form.get('name') || ''),
       email: String(form.get('email') || ''),
       eventType: String(form.get('eventType') || ''),
+      eventDate: String(form.get('eventDate') || ''),
+      phone: String(form.get('phone') || ''),
       message: String(form.get('message') || ''),
       company: String(form.get('company') || ''),
     }
@@ -86,9 +88,24 @@ export function ContactForm() {
       </label>
 
       <label className="flex flex-col gap-2">
-        <span className={labelClass}>Event type</span>
-        <input type="text" name="eventType" className={fieldClass} />
+        <span className={labelClass}>
+          Phone <span className="font-normal">(optional)</span>
+        </span>
+        <input type="tel" name="phone" autoComplete="tel" className={fieldClass} />
       </label>
+
+      <div className="grid gap-8 sm:grid-cols-2">
+        <label className="flex flex-col gap-2">
+          <span className={labelClass}>Event type</span>
+          <input type="text" name="eventType" placeholder="Wedding, game, gala…" className={`${fieldClass} placeholder:text-muted`} />
+        </label>
+        <label className="flex flex-col gap-2">
+          <span className={labelClass}>
+            Event date <span className="font-normal">(if known)</span>
+          </span>
+          <input type="date" name="eventDate" className={`${fieldClass} [color-scheme:dark] [.light_&]:[color-scheme:light]`} />
+        </label>
+      </div>
 
       <label className="flex flex-col gap-2">
         <span className={labelClass}>Message</span>

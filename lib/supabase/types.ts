@@ -52,6 +52,10 @@ export type Gallery = {
   status: 'draft' | 'published'
   sent_at: string | null
   created_at: string
+  client_id: string | null
+  expires_on: string | null
+  first_viewed_at: string | null
+  downloaded_at: string | null
 }
 
 export type Photo = {
@@ -64,5 +68,43 @@ export type Photo = {
   height: number | null
   filename: string | null
   sort_order: number
+  created_at: string
+}
+
+export const CLIENT_STAGES = ['inquiry', 'conversation', 'contract', 'event', 'red_room', 'posted'] as const
+export type ClientStage = (typeof CLIENT_STAGES)[number] | 'archived'
+
+export const STAGE_LABELS: Record<ClientStage, string> = {
+  inquiry: 'Inquiry',
+  conversation: 'Conversation',
+  contract: 'Contract',
+  event: 'Event',
+  red_room: 'Red Room',
+  posted: 'Posted',
+  archived: 'Archived',
+}
+
+export type Client = {
+  id: string
+  name: string
+  email: string
+  phone: string | null
+  event_type: string | null
+  event_date: string | null
+  event_location: string | null
+  stage: ClientStage
+  is_new: boolean
+  inquiry_message: string | null
+  contract_url: string | null
+  contract_signed_on: string | null
+  created_at: string
+  stage_changed_at: string
+}
+
+export type ClientActivity = {
+  id: string
+  client_id: string
+  kind: 'note' | 'stage' | 'inquiry' | 'gallery'
+  body: string
   created_at: string
 }
