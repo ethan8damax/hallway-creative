@@ -6,6 +6,18 @@ import { btn } from '@/components/admin/ui'
 import { deleteCategory, reorderCategories } from './actions'
 import { useConfirm } from '@/components/admin/ConfirmDialog'
 
+// SVG, not text glyphs: arrow characters render as emoji on Apple devices.
+function Icon({ d }: { d: string }) {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d={d} />
+    </svg>
+  )
+}
+
+const iconBtn =
+  'flex items-center justify-center rounded-xs p-1 text-muted transition-colors hover:bg-surface hover:text-ink disabled:opacity-30 disabled:hover:bg-transparent focus-visible:outline-2 focus-visible:outline-monitor'
+
 type Row = { id: string; title: string; slug: string; cover_url?: string | null; count: number }
 
 export function CategoryList({ initial }: { initial: Row[] }) {
@@ -67,18 +79,20 @@ export function CategoryList({ initial }: { initial: Row[] }) {
                 </span>
               </span>
             </Link>
-            <div className="flex flex-wrap items-center gap-1">
-              <button type="button" onClick={() => move(i, i - 1)} disabled={i === 0} aria-label={`Move ${row.title} up`} className={btn.quiet}>
-                Up
-              </button>
-              <button type="button" onClick={() => move(i, i + 1)} disabled={i === rows.length - 1} aria-label={`Move ${row.title} down`} className={btn.quiet}>
-                Down
-              </button>
+            <div className="flex items-center gap-2">
+              <div className="flex flex-col">
+                <button type="button" onClick={() => move(i, i - 1)} disabled={i === 0} aria-label={`Move ${row.title} up`} title="Move up" className={iconBtn}>
+                  <Icon d="M12 19V5M5 12l7-7 7 7" />
+                </button>
+                <button type="button" onClick={() => move(i, i + 1)} disabled={i === rows.length - 1} aria-label={`Move ${row.title} down`} title="Move down" className={iconBtn}>
+                  <Icon d="M12 5v14M5 12l7 7 7-7" />
+                </button>
+              </div>
               <Link href={`/admin/portfolio/${row.id}`} className={btn.secondary}>
                 Edit
               </Link>
-              <button type="button" onClick={() => remove(row)} className={btn.danger}>
-                Delete
+              <button type="button" onClick={() => remove(row)} aria-label={`Delete ${row.title}`} title="Delete" className={`${iconBtn} p-2 text-tally-text hover:text-tally-text`}>
+                <Icon d="M4 7h16M10 11v6M14 11v6M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-12M9 7V4h6v3" />
               </button>
             </div>
           </li>

@@ -71,9 +71,12 @@ export function SortablePhotoGrid({
               type="button"
               onClick={() => onDelete(photo.id)}
               aria-label={`Delete ${photo.label ?? 'photo'}`}
-              className="absolute right-2 top-2 rounded-xs bg-bg/85 px-2 py-0.5 text-xs font-medium text-tally-text transition-colors hover:bg-bg"
+              title="Delete"
+              className="absolute right-2 top-2 rounded-xs bg-bg/85 p-1.5 text-tally-text transition-colors hover:bg-bg focus-visible:outline-2 focus-visible:outline-monitor"
             >
-              Delete
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M4 7h16M10 11v6M14 11v6M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-12M9 7V4h6v3" />
+              </svg>
             </button>
           </div>
           <div className="flex items-center gap-0.5 px-1 py-1">

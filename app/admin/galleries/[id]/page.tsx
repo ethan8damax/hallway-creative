@@ -75,6 +75,13 @@ export default async function GalleryDetailPage({ params }: { params: Promise<{ 
         </Panel>
 
         <div className="flex flex-col gap-6">
+          <Panel title="Access code" description="Set this first: it’s what your client types to get in. Changing it signs out anyone who already unlocked the gallery.">
+            <ActionForm action={changeAccessCode.bind(null, gallery.id)} submitLabel="Set new code" resetOnSuccess>
+              <Field label="New code">
+                <input name="access_code" required autoComplete="off" placeholder="e.g. lakeside-2026" className={inputClass} />
+              </Field>
+            </ActionForm>
+          </Panel>
           <Panel title="Delivery">
             <ol className="mb-6 grid grid-cols-3 gap-3">
               <Milestone label="Sent" at={gallery.sent_at} />
@@ -110,13 +117,6 @@ export default async function GalleryDetailPage({ params }: { params: Promise<{ 
             </ActionForm>
           </Panel>
 
-          <Panel title="Access code" description="Changing it signs out everyone who already unlocked the gallery. Send the new code to your client.">
-            <ActionForm action={changeAccessCode.bind(null, gallery.id)} submitLabel="Set new code" resetOnSuccess>
-              <Field label="New code">
-                <input name="access_code" required autoComplete="off" placeholder="e.g. lakeside-2026" className={inputClass} />
-              </Field>
-            </ActionForm>
-          </Panel>
 
           <div>
             <DeleteGallery id={gallery.id} title={gallery.title} />
