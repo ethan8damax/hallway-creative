@@ -5,9 +5,11 @@ import { UploadZone, type UploadResult } from '@/components/admin/UploadZone'
 import { SortablePhotoGrid } from '@/components/admin/SortablePhotoGrid'
 import { addPhoto, deletePhoto, reorderPhotos } from '../actions'
 import type { Photo } from '@/lib/supabase/types'
+import { useConfirm } from '@/components/admin/ConfirmDialog'
 
 export function PhotosEditor({ galleryId, slug, initialPhotos }: { galleryId: string; slug: string; initialPhotos: Photo[] }) {
   const [photos, setPhotos] = useState(initialPhotos)
+  const confirm = useConfirm()
   const [error, setError] = useState<string | null>(null)
   // Claimed synchronously per upload, so parallel uploads never share a slot.
   const nextOrder = useRef(Math.max(-1, ...initialPhotos.map((p) => p.sort_order)) + 1)
@@ -39,7 +41,13 @@ export function PhotosEditor({ galleryId, slug, initialPhotos }: { galleryId: st
   }
 
   async function handleDelete(id: string) {
-    if (!window.confirm('Delete this photo from the gallery?')) return
+    const photo = photos.find((p) => p.id === id)
+    const ok = await confirm({
+      title: 'Delete this photo?',
+      body: `${photo?.filename ? `“${photo.filename}” is` : 'It’s'} removed from the gallery and the file is permanently deleted. Your client won’t see it anymore.`,
+      confirmLabel: 'Delete photo',
+    })
+    if (!ok) return
     await deletePhoto(id, galleryId)
     setPhotos((current) => current.filter((p) => p.id !== id))
   }

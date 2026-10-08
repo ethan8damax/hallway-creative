@@ -132,7 +132,6 @@ body {
   background: linear-gradient(to bottom, oklch(0 0 0 / 0.45) 0%, oklch(0 0 0 / 0) 100%);
 }
 
-dialog::backdrop { background: transparent; }
 
 /* Admin: "Saved" confirmation that fades itself out — no timers in React. */
 @keyframes saved-flash {

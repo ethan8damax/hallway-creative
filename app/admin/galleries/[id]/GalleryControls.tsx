@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
 import { btn, inputClass, Field } from '@/components/admin/ui'
 import { deleteGallery, togglePublish } from '../actions'
+import { useConfirm } from '@/components/admin/ConfirmDialog'
 
 export function PublishToggle({ id, status }: { id: string; status: 'draft' | 'published' }) {
   const [pending, startTransition] = useTransition()
@@ -37,12 +38,17 @@ export function CopyLink({ url }: { url: string }) {
 
 export function SendToClient({ id, email, published, sentAt }: { id: string; email: string; published: boolean; sentAt: string | null }) {
   const router = useRouter()
+  const confirm = useConfirm()
   const [code, setCode] = useState('')
   const [state, setState] = useState<'idle' | 'sending' | 'sent' | 'wrong_code' | 'failed'>('idle')
 
   async function send(e: React.FormEvent) {
     e.preventDefault()
-    if (sentAt && !window.confirm('This gallery was already sent. Send it again?')) return
+    if (
+      sentAt &&
+      !(await confirm({ title: 'Send it again?', body: `This gallery was already emailed to ${email}. They’ll get a second email with the link and code.`, confirmLabel: 'Send again' }))
+    )
+      return
     setState('sending')
     const res = await fetch(`/api/admin/galleries/${id}/send`, { method: 'POST', body: JSON.stringify({ code }) })
     if (res.ok) {
@@ -79,12 +85,19 @@ export function SendToClient({ id, email, published, sentAt }: { id: string; ema
 
 export function DeleteGallery({ id, title }: { id: string; title: string }) {
   const router = useRouter()
+  const confirm = useConfirm()
   return (
     <button
       type="button"
       className={btn.danger}
       onClick={async () => {
-        if (!window.confirm(`Delete “${title}”? The client's link stops working and this can't be undone.`)) return
+        const ok = await confirm({
+          title: `Delete “${title}”?`,
+          body: 'Your client’s link stops working and every photo in the gallery is permanently deleted. Make sure they’ve downloaded everything first. This can’t be undone.',
+          confirmLabel: 'Delete gallery',
+          requireText: title,
+        })
+        if (!ok) return
         await deleteGallery(id)
         router.push('/admin/galleries')
       }}

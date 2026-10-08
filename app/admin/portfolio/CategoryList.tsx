@@ -4,11 +4,13 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { btn } from '@/components/admin/ui'
 import { deleteCategory, reorderCategories } from './actions'
+import { useConfirm } from '@/components/admin/ConfirmDialog'
 
 type Row = { id: string; title: string; slug: string; cover_url?: string | null; count: number }
 
 export function CategoryList({ initial }: { initial: Row[] }) {
   const [rows, setRows] = useState(initial)
+  const confirm = useConfirm()
   const [error, setError] = useState(false)
 
   async function move(from: number, to: number) {
@@ -28,7 +30,13 @@ export function CategoryList({ initial }: { initial: Row[] }) {
   }
 
   async function remove(row: Row) {
-    if (!window.confirm(`Delete the ${row.title} category and all ${row.count} items in it? It disappears from the site.`)) return
+    const ok = await confirm({
+      title: `Delete the ${row.title} category?`,
+      body: `All ${row.count} ${row.count === 1 ? 'item' : 'items'} in it come off the site, and the photo files are permanently deleted. This can’t be undone.`,
+      confirmLabel: 'Delete category',
+      requireText: row.title,
+    })
+    if (!ok) return
     setError(false)
     try {
       await deleteCategory(row.id)

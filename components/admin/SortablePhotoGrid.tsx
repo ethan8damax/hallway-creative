@@ -32,8 +32,9 @@ export function SortablePhotoGrid({
     onReorder(move(photos, from, to).map((p) => p.id))
   }
 
+  // as many ~170px columns as the panel fits, so the controls never get cramped
   return (
-    <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+    <ul className="grid grid-cols-[repeat(auto-fill,minmax(170px,1fr))] gap-3">
       {photos.map((photo, index) => (
         <li
           key={photo.id}

@@ -7,6 +7,7 @@ import { SortablePhotoGrid } from '@/components/admin/SortablePhotoGrid'
 import { btn } from '@/components/admin/ui'
 import type { MediaItem } from '@/lib/supabase/types'
 import { addMediaItem, deleteCategory, deleteMediaItem, reorderMedia, updateCaption } from '../actions'
+import { useConfirm } from '@/components/admin/ConfirmDialog'
 
 function CaptionField({ id, initial }: { id: string; initial: string }) {
   const [value, setValue] = useState(initial)
@@ -41,6 +42,7 @@ function CaptionField({ id, initial }: { id: string; initial: string }) {
 
 export function MediaEditor({ categoryId, initialItems }: { categoryId: string; initialItems: MediaItem[] }) {
   const [items, setItems] = useState(initialItems)
+  const confirm = useConfirm()
   const [error, setError] = useState<string | null>(null)
   const photos = items.filter((i) => i.media_type === 'image' && i.image_url)
   const videos = items.filter((i) => i.media_type === 'video')
@@ -70,7 +72,16 @@ export function MediaEditor({ categoryId, initialItems }: { categoryId: string; 
   }
 
   async function handleDelete(id: string) {
-    if (!window.confirm('Remove this from the portfolio?')) return
+    const item = items.find((i) => i.id === id)
+    const ok = await confirm({
+      title: item?.media_type === 'video' ? 'Remove this video?' : 'Delete this photo?',
+      body:
+        item?.media_type === 'video'
+          ? 'It comes off your portfolio right away.'
+          : 'It comes off your portfolio and the file is permanently deleted. This can’t be undone.',
+      confirmLabel: item?.media_type === 'video' ? 'Remove video' : 'Delete photo',
+    })
+    if (!ok) return
     await deleteMediaItem(id)
     setItems((current) => current.filter((i) => i.id !== id))
   }
@@ -111,12 +122,19 @@ export function MediaEditor({ categoryId, initialItems }: { categoryId: string; 
 
 export function DeleteCategory({ id, title }: { id: string; title: string }) {
   const router = useRouter()
+  const confirm = useConfirm()
   return (
     <button
       type="button"
       className={btn.danger}
       onClick={async () => {
-        if (!window.confirm(`Delete the ${title} category and everything in it? This removes it from the site.`)) return
+        const ok = await confirm({
+          title: `Delete the ${title} category?`,
+          body: 'The category and every photo and video in it come off the site, and the photo files are permanently deleted. This can’t be undone.',
+          confirmLabel: 'Delete category',
+          requireText: title,
+        })
+        if (!ok) return
         await deleteCategory(id)
         router.push('/admin/portfolio')
       }}

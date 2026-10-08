@@ -6,6 +6,7 @@ import { UploadZone } from '@/components/admin/UploadZone'
 import { Field, btn, inputClass } from '@/components/admin/ui'
 import type { Service } from '@/lib/supabase/types'
 import { deleteService, reorderServices, setPortrait, updateService } from './actions'
+import { useConfirm } from '@/components/admin/ConfirmDialog'
 
 export function PortraitEditor({ aboutId, initialUrl }: { aboutId: string; initialUrl: string | null }) {
   const [url, setUrl] = useState(initialUrl)
@@ -29,6 +30,7 @@ export function PortraitEditor({ aboutId, initialUrl }: { aboutId: string; initi
 
 export function ServiceList({ initial, categories }: { initial: Service[]; categories: { id: string; title: string }[] }) {
   const [services, setServices] = useState(initial)
+  const confirm = useConfirm()
   const [error, setError] = useState<string | null>(null)
 
   async function move(from: number, to: number) {
@@ -47,7 +49,12 @@ export function ServiceList({ initial, categories }: { initial: Service[]; categ
   }
 
   async function remove(service: Service) {
-    if (!window.confirm(`Remove “${service.title}” from the services page?`)) return
+    const ok = await confirm({
+      title: `Remove “${service.title}”?`,
+      body: 'It comes off the services page right away. This can’t be undone.',
+      confirmLabel: 'Remove service',
+    })
+    if (!ok) return
     await deleteService(service.id)
     setServices((all) => all.filter((s) => s.id !== service.id))
   }
