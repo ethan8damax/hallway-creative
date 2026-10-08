@@ -27,6 +27,7 @@ const form = (fields: Record<string, string>) => {
 const valid = { title: 'Sunset Wedding', client_name: 'Jane & Sam', client_email: 'jane@example.com', event_date: '2026-10-01', access_code: 'sunset-2026' }
 
 beforeEach(() => {
+  vi.stubEnv('GALLERY_SESSION_SECRET', 'test-secret')
   insert.mockReset().mockResolvedValue({ data: { id: 'g1' }, error: null })
   update.mockReset()
 })
@@ -45,6 +46,7 @@ describe('createGallery', () => {
       event_date: '2026-10-01',
       expires_on: '2027-01-01',
       access_code_hash: 'hashed',
+      access_code_encrypted: expect.any(String),
       status: 'draft',
     })
   })

@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { createServiceClient } from '@/lib/supabase/service'
 import { requireAdmin } from '@/lib/admin'
 import { hashAccessCode } from '@/lib/accessCode'
+import { encryptCode } from '@/lib/codeCrypto'
 import { slugify, isDuplicateSlugError } from '@/lib/slugify'
 import { saveOrder } from '@/lib/saveOrder'
 import { deleteR2Objects, keyFromPublicUrl } from '@/lib/r2'
@@ -38,6 +39,7 @@ export async function createGallery(formData: FormData): Promise<string> {
       event_date: text(formData, 'event_date'),
       expires_on: text(formData, 'expires_on'),
       access_code_hash: await hashAccessCode(accessCode),
+      access_code_encrypted: encryptCode(accessCode),
       status: 'draft',
     })
     .select('id')
@@ -73,7 +75,7 @@ export async function changeAccessCode(id: string, formData: FormData): Promise<
   await requireAdmin()
   const code = text(formData, 'access_code')
   if (!code) throw new Error('Enter the new code.')
-  const { error } = await createServiceClient().from('galleries').update({ access_code_hash: await hashAccessCode(code) }).eq('id', id)
+  const { error } = await createServiceClient().from('galleries').update({ access_code_hash: await hashAccessCode(code), access_code_encrypted: encryptCode(code) }).eq('id', id)
   if (error) throw error
   refresh(id)
 }

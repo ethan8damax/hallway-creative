@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { isAdminEmail } from '@/lib/admin'
 import { createServiceClient } from '@/lib/supabase/service'
 import { verifyAccessCode } from '@/lib/accessCode'
+import { decryptCode } from '@/lib/codeCrypto'
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const supabase = await createClient()
@@ -16,7 +17,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   const { code } = (await request.json().catch(() => ({}))) as { code?: string }
   const { data: gallery, error } = await createServiceClient()
     .from('galleries')
-    .select('title, client_name, client_email, slug, access_code_hash, client_id')
+    .select('title, client_name, client_email, slug, access_code_hash, access_code_encrypted, client_id')
     .eq('id', id)
     .single()
 
@@ -24,9 +25,11 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     return NextResponse.json({ error: 'not_found' }, { status: 404 })
   }
 
-  // Codes are stored hashed, so Andrew re-enters the code to include it; checking
-  // it against the hash means a typo can never reach the client.
-  if (!code?.trim() || !(await verifyAccessCode(code.trim(), gallery.access_code_hash))) {
+  // The stored code is used when we have it; galleries from before codes were
+  // stored send the one Andrew types. Either way it's checked against the hash,
+  // so a wrong code can never reach the client.
+  const sendCode = (decryptCode(gallery.access_code_encrypted) ?? code ?? '').trim()
+  if (!sendCode || !(await verifyAccessCode(sendCode, gallery.access_code_hash))) {
     return NextResponse.json({ error: 'wrong_code' }, { status: 400 })
   }
 
@@ -45,7 +48,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
         `Your gallery from ${gallery.title} is ready to view and download:`,
         '',
         galleryUrl,
-        `Access code: ${code.trim()}`,
+        `Access code: ${sendCode}`,
         '',
         'If you have any trouble getting in, just reply to this email.',
         '',

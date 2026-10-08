@@ -5,7 +5,9 @@ import { ActionForm } from '@/components/admin/ActionForm'
 import { Badge, Field, Panel, btn, formatDate, inputClass } from '@/components/admin/ui'
 import { isExpired } from '@/lib/galleryExpiry'
 import type { Gallery, Photo } from '@/lib/supabase/types'
-import { changeAccessCode, updateGallery } from '../actions'
+import { updateGallery } from '../actions'
+import { decryptCode } from '@/lib/codeCrypto'
+import { AccessCodePanel } from './AccessCodePanel'
 import { CopyLink, DeleteGallery, PublishToggle, SendToClient } from './GalleryControls'
 import { PhotosEditor } from './PhotosEditor'
 
@@ -36,6 +38,7 @@ export default async function GalleryDetailPage({ params }: { params: Promise<{ 
     : { data: null }
   const url = `${process.env.NEXT_PUBLIC_SITE_URL ?? ''}/gallery/${gallery.slug}`
   const expired = isExpired(gallery.expires_on)
+  const code = decryptCode(gallery.access_code_encrypted)
 
   return (
     <div>
@@ -75,12 +78,8 @@ export default async function GalleryDetailPage({ params }: { params: Promise<{ 
         </Panel>
 
         <div className="flex flex-col gap-6">
-          <Panel title="Access code" description="Set this first: it’s what your client types to get in. Changing it signs out anyone who already unlocked the gallery.">
-            <ActionForm action={changeAccessCode.bind(null, gallery.id)} submitLabel="Set new code" resetOnSuccess>
-              <Field label="New code">
-                <input name="access_code" required autoComplete="off" placeholder="e.g. lakeside-2026" className={inputClass} />
-              </Field>
-            </ActionForm>
+          <Panel title="Access code" description="What your client types to open the gallery. Set it before you send.">
+            <AccessCodePanel id={gallery.id} code={code} />
           </Panel>
           <Panel title="Delivery">
             <ol className="mb-6 grid grid-cols-3 gap-3">
@@ -88,7 +87,7 @@ export default async function GalleryDetailPage({ params }: { params: Promise<{ 
               <Milestone label="Opened" at={gallery.first_viewed_at} />
               <Milestone label="Downloaded" at={gallery.downloaded_at} />
             </ol>
-            <SendToClient id={gallery.id} email={gallery.client_email} published={gallery.status === 'published'} sentAt={gallery.sent_at} />
+            <SendToClient id={gallery.id} email={gallery.client_email} published={gallery.status === 'published'} sentAt={gallery.sent_at} hasCode={!!code} />
             <div className="mt-6 border-t border-border pt-5">
               <p className="mb-2 text-sm font-medium text-ink">Gallery link</p>
               <CopyLink url={url} />

@@ -36,7 +36,19 @@ export function CopyLink({ url }: { url: string }) {
   )
 }
 
-export function SendToClient({ id, email, published, sentAt }: { id: string; email: string; published: boolean; sentAt: string | null }) {
+export function SendToClient({
+  id,
+  email,
+  published,
+  sentAt,
+  hasCode,
+}: {
+  id: string
+  email: string
+  published: boolean
+  sentAt: string | null
+  hasCode: boolean
+}) {
   const router = useRouter()
   const confirm = useConfirm()
   const [code, setCode] = useState('')
@@ -66,16 +78,20 @@ export function SendToClient({ id, email, published, sentAt }: { id: string; ema
 
   return (
     <form onSubmit={send} className="flex flex-col gap-3">
-      <Field label="Access code to include" hint="Type the code you set. It's checked before sending, so a typo can't go out.">
-        <input value={code} onChange={(e) => setCode(e.target.value)} autoComplete="off" required className={`${inputClass} sm:max-w-xs`} />
-      </Field>
+      {hasCode ? (
+        <p className="text-sm text-muted">The email includes the gallery link and the access code above.</p>
+      ) : (
+        <Field label="Access code to include" hint="Type the code you set. It's checked before sending, so a typo can't go out.">
+          <input value={code} onChange={(e) => setCode(e.target.value)} autoComplete="off" required className={`${inputClass} sm:max-w-xs`} />
+        </Field>
+      )}
       <div className="flex flex-wrap items-center gap-3">
-        <button type="submit" disabled={state === 'sending' || !code.trim()} className={btn.primary}>
+        <button type="submit" disabled={state === 'sending' || (!hasCode && !code.trim())} className={btn.primary}>
           {state === 'sending' ? 'Sending…' : sentAt ? `Send again to ${email}` : `Send to ${email}`}
         </button>
         <span role="status" aria-live="polite" className="text-sm">
           {state === 'sent' && <span className="text-monitor">Sent</span>}
-          {state === 'wrong_code' && <span className="text-tally-text">That isn&apos;t this gallery&apos;s code. Check it, or set a new one below.</span>}
+          {state === 'wrong_code' && <span className="text-tally-text">That isn&apos;t this gallery&apos;s code. Check it, or set a new one above.</span>}
           {state === 'failed' && <span className="text-tally-text">The email didn&apos;t go out. Try again, or share the link and code yourself.</span>}
         </span>
       </div>

@@ -65,5 +65,7 @@ export default async function GalleryPage({ params }: { params: Promise<{ slug: 
     .eq('gallery_id', gallery.id)
     .order('sort_order', { ascending: true })
 
-  return <GalleryView gallery={gallery} photos={(photos ?? []) as Photo[]} isPreview={isAdmin} />
+  // only what the view needs — never the code hash or encrypted code
+  const view = { title: gallery.title, event_date: gallery.event_date, slug: gallery.slug }
+  return <GalleryView gallery={view} photos={(photos ?? []) as Photo[]} isPreview={isAdmin} />
 }

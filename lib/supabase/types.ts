@@ -49,6 +49,7 @@ export type Gallery = {
   slug: string
   event_date: string | null
   access_code_hash: string
+  access_code_encrypted: string | null
   status: 'draft' | 'published'
   sent_at: string | null
   created_at: string

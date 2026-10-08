@@ -1,4 +1,5 @@
 import bcrypt from 'bcryptjs'
+import { encryptCode } from '@/lib/codeCrypto'
 import { describe, it, expect, vi } from 'vitest'
 
 vi.mock('@/lib/supabase/server', () => ({ createClient: vi.fn() }))
@@ -95,6 +96,18 @@ describe('POST /api/admin/galleries/[id]/send', () => {
       })
     )
     expect(update).toHaveBeenCalledWith(expect.objectContaining({ sent_at: expect.any(String) }))
+  })
+
+  it('uses the stored code, so Andrew does not have to type it', async () => {
+    vi.stubEnv('GALLERY_SESSION_SECRET', 'test-secret')
+    mockAuthenticated()
+    mockGalleryLookup({ data: { ...galleryRow, access_code_encrypted: encryptCode('sunset-2026') }, error: null })
+    send.mockResolvedValue({ error: null })
+
+    const response = await POST(new Request('http://localhost', { method: 'POST', body: '{}' }), requestParams())
+
+    expect(response.status).toBe(200)
+    expect(send).toHaveBeenCalledWith(expect.objectContaining({ text: expect.stringContaining('Access code: sunset-2026') }))
   })
 
   it('returns 502 and does not record sent_at when Resend fails', async () => {
