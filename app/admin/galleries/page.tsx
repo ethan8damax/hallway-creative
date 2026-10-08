@@ -3,6 +3,7 @@ import { createServiceClient } from '@/lib/supabase/service'
 import { Badge, EmptyState, PageHeader, btn, formatDate } from '@/components/admin/ui'
 import { isExpired } from '@/lib/galleryExpiry'
 import type { Gallery } from '@/lib/supabase/types'
+import { ClosingDate } from './ClosingDate'
 
 type Row = Gallery & { photos: { count: number }[] }
 
@@ -25,7 +26,7 @@ export default async function AdminGalleriesPage() {
     <div>
       <PageHeader
         title="Galleries"
-        description="Private photo deliveries. Each one has its own link and access code."
+        description="Private photo deliveries. Each one has its own link and access code. Set a closing date to shut a gallery automatically; closed galleries can be deleted to free up storage."
         actions={
           <Link href="/admin/galleries/new" className={btn.primary}>
             New gallery
@@ -39,17 +40,17 @@ export default async function AdminGalleriesPage() {
           {galleries.map((g) => {
             const delivery = isExpired(g.expires_on) ? { text: 'Expired', tone: 'neutral' as const } : deliveryLabel(g)
             return (
-              <li key={g.id}>
-                <Link href={`/admin/galleries/${g.id}`} className="flex flex-col gap-1 px-4 py-3.5 transition-colors hover:bg-surface/50 sm:flex-row sm:items-center sm:gap-4">
+              <li key={g.id} className="flex flex-col gap-2 px-4 py-3.5 transition-colors hover:bg-surface/50 lg:flex-row lg:items-center lg:gap-6">
+                <Link href={`/admin/galleries/${g.id}`} className="flex min-w-0 flex-1 flex-col gap-1 sm:flex-row sm:items-center sm:gap-4">
                   <span className="min-w-0 flex-1">
                     <span className="block truncate text-sm font-medium text-ink">{g.title}</span>
                     <span className="block text-xs text-muted">
                       {g.client_name} · {g.photos[0]?.count ?? 0} photos
-                      {g.expires_on && !isExpired(g.expires_on) ? ` · closes ${formatDate(g.expires_on, { month: 'short', day: 'numeric' })}` : ''}
                     </span>
                   </span>
                   <Badge tone={delivery.tone}>{delivery.text}</Badge>
                 </Link>
+                <ClosingDate id={g.id} value={g.expires_on} title={g.title} />
               </li>
             )
           })}

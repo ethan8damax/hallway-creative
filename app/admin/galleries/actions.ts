@@ -6,6 +6,7 @@ import { requireAdmin } from '@/lib/admin'
 import { hashAccessCode } from '@/lib/accessCode'
 import { slugify, isDuplicateSlugError } from '@/lib/slugify'
 import { saveOrder } from '@/lib/saveOrder'
+import { deleteR2Objects, keyFromPublicUrl } from '@/lib/r2'
 import type { Photo } from '@/lib/supabase/types'
 
 const text = (fd: FormData, key: string) => String(fd.get(key) ?? '').trim() || null
@@ -93,8 +94,14 @@ export async function addPhoto(
 
 export async function deletePhoto(id: string, galleryId: string) {
   await requireAdmin()
-  const { error } = await createServiceClient().from('photos').delete().eq('id', id).eq('gallery_id', galleryId)
+  const { data, error } = await createServiceClient()
+    .from('photos')
+    .delete()
+    .eq('id', id)
+    .eq('gallery_id', galleryId)
+    .select('r2_key, preview_url')
   if (error) throw error
+  await deleteR2Objects((data ?? []).flatMap((p) => [p.r2_key, keyFromPublicUrl(p.preview_url)]))
   refresh(galleryId)
 }
 
@@ -112,12 +119,24 @@ export async function togglePublish(id: string, status: 'draft' | 'published') {
   revalidatePath('/admin/galleries')
 }
 
-// ponytail: removes the gallery and its photo rows; the files stay in R2.
-// Add an R2 batch delete if storage cost ever matters.
+// Removes the gallery, its photo rows (cascade) and every file in R2.
 export async function deleteGallery(id: string) {
   await requireAdmin()
-  const { error } = await createServiceClient().from('galleries').delete().eq('id', id)
+  const db = createServiceClient()
+  const { data: photos, error: readError } = await db.from('photos').select('r2_key, preview_url').eq('gallery_id', id)
+  if (readError) throw readError
+  const { error } = await db.from('galleries').delete().eq('id', id)
   if (error) throw error
+  await deleteR2Objects((photos ?? []).flatMap((p) => [p.r2_key, keyFromPublicUrl(p.preview_url)]))
   refresh()
+  revalidatePath('/admin/galleries')
+}
+
+export async function setClosingDate(id: string, date: string | null) {
+  await requireAdmin()
+  if (date && !/^\d{4}-\d{2}-\d{2}$/.test(date)) throw new Error('Pick a valid date.')
+  const { error } = await createServiceClient().from('galleries').update({ expires_on: date || null }).eq('id', id)
+  if (error) throw error
+  refresh(id)
   revalidatePath('/admin/galleries')
 }

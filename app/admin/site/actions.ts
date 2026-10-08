@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { createServiceClient } from '@/lib/supabase/service'
 import { requireAdmin } from '@/lib/admin'
 import { saveOrder } from '@/lib/saveOrder'
+import { deleteR2Objects, keyFromPublicUrl } from '@/lib/r2'
 
 const text = (fd: FormData, key: string) => String(fd.get(key) ?? '').trim() || null
 
@@ -37,8 +38,12 @@ export async function updateBio(id: string, formData: FormData): Promise<void> {
 
 export async function setPortrait(id: string, portrait: { key: string; url: string }) {
   await requireAdmin()
-  const { error } = await createServiceClient().from('about').update({ portrait_r2_key: portrait.key, portrait_url: portrait.url }).eq('id', id)
+  const db = createServiceClient()
+  const { data: previous } = await db.from('about').select('portrait_r2_key, portrait_url').eq('id', id).maybeSingle()
+  const { error } = await db.from('about').update({ portrait_r2_key: portrait.key, portrait_url: portrait.url }).eq('id', id)
   if (error) throw error
+  // the old portrait's original and preview are no longer used anywhere
+  if (previous) await deleteR2Objects([previous.portrait_r2_key, keyFromPublicUrl(previous.portrait_url)])
   refreshPublic()
 }
 

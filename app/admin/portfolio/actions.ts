@@ -6,6 +6,7 @@ import { requireAdmin } from '@/lib/admin'
 import { slugify, isDuplicateSlugError } from '@/lib/slugify'
 import { saveOrder } from '@/lib/saveOrder'
 import { getVideoEmbedUrl } from '@/lib/video'
+import { deleteR2Objects, keyFromPublicUrl } from '@/lib/r2'
 import type { MediaItem } from '@/lib/supabase/types'
 
 const text = (fd: FormData, key: string) => String(fd.get(key) ?? '').trim() || null
@@ -48,8 +49,12 @@ export async function updateCategory(id: string, formData: FormData): Promise<vo
 
 export async function deleteCategory(id: string) {
   await requireAdmin()
-  const { error } = await createServiceClient().from('categories').delete().eq('id', id)
+  const db = createServiceClient()
+  const { data: media, error: readError } = await db.from('portfolio_media').select('r2_key, image_url, preview_url').eq('category_id', id)
+  if (readError) throw readError
+  const { error } = await db.from('categories').delete().eq('id', id)
   if (error) throw error
+  await deleteR2Objects((media ?? []).flatMap((m) => [m.r2_key, keyFromPublicUrl(m.image_url), keyFromPublicUrl(m.preview_url)]))
   refreshPublic()
 }
 
@@ -101,7 +106,9 @@ export async function reorderMedia(ids: string[]) {
 
 export async function deleteMediaItem(id: string) {
   await requireAdmin()
-  const { error } = await createServiceClient().from('portfolio_media').delete().eq('id', id)
+  const { data, error } = await createServiceClient().from('portfolio_media').delete().eq('id', id).select('r2_key, image_url, preview_url')
   if (error) throw error
+  // videos have no files; their keys/urls are null and skipped
+  await deleteR2Objects((data ?? []).flatMap((m) => [m.r2_key, keyFromPublicUrl(m.image_url), keyFromPublicUrl(m.preview_url)]))
   refreshPublic()
 }

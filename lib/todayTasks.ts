@@ -63,6 +63,16 @@ export function buildToday(clients: Client[], galleries: TodayGallery[], now = n
         tone: 'neutral' as const,
         tag: 'Gallery',
       })),
+    ...galleries
+      .filter((g) => isExpired(g.expires_on, now))
+      .map((g) => ({
+        key: `closed-${g.id}`,
+        href: `/admin/galleries/${g.id}`,
+        title: `“${g.title}” has closed`,
+        detail: `Closed after ${short(g.expires_on!)}. Delete it to free up storage, or set a later date to reopen it.`,
+        tone: 'neutral' as const,
+        tag: 'Cleanup',
+      })),
   ]
 
   const upcoming = clients

@@ -27,9 +27,9 @@ describe('buildToday', () => {
     expect(tasks.map((t) => t.key)).toEqual(['new-a', 'shot-b', 'send-unsent', 'nudge-stale'])
   })
 
-  it('warns about galleries closing within a week but not expired ones', () => {
+  it('warns about galleries closing within a week, and lists closed ones for cleanup', () => {
     const { tasks } = buildToday([], [gallery({ id: 'soon', sent_at: '2026-10-07T00:00:00Z', expires_on: '2026-10-12' }), gallery({ id: 'gone', expires_on: '2026-10-01' })], now)
-    expect(tasks.map((t) => t.key)).toEqual(['exp-soon'])
+    expect(tasks.map((t) => t.key)).toEqual(['exp-soon', 'closed-gone'])
   })
 
   it('lists upcoming events in date order within six weeks', () => {
