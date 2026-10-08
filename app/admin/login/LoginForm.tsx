@@ -3,22 +3,23 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-
-const inputClass =
-  'w-full border-b border-border bg-transparent py-2 text-ink focus:border-b-2 focus:border-[oklch(0.72_0.09_230)] focus:outline-none'
+import { Field, btn, inputClass } from '@/components/admin/ui'
 
 export function LoginForm() {
   const router = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
+  const [pending, setPending] = useState(false)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
+    setPending(true)
     const { error } = await createClient().auth.signInWithPassword({ email, password })
     if (error) {
       setError('Wrong email or password.')
+      setPending(false)
       return
     }
     router.push('/admin')
@@ -26,18 +27,20 @@ export function LoginForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex max-w-sm flex-col gap-4">
-      <label className="ds-field">
-        <span className="mb-2 block text-sm font-medium text-muted">Email</span>
-        <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className={inputClass} />
-      </label>
-      <label className="ds-field">
-        <span className="mb-2 block text-sm font-medium text-muted">Password</span>
-        <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} className={inputClass} />
-      </label>
-      {error && <p className="text-sm text-[var(--tally-red-text)]">{error}</p>}
-      <button type="submit" className="w-fit rounded-xs bg-tally px-6 py-3 font-semibold text-on-accent">
-        Sign in
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      <Field label="Email">
+        <input type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} className={inputClass} />
+      </Field>
+      <Field label="Password">
+        <input type="password" autoComplete="current-password" required value={password} onChange={(e) => setPassword(e.target.value)} className={inputClass} />
+      </Field>
+      {error && (
+        <p role="alert" className="text-sm text-tally-text">
+          {error}
+        </p>
+      )}
+      <button type="submit" disabled={pending} className={`${btn.primary} mt-2 w-full py-2.5`}>
+        {pending ? 'Signing in…' : 'Sign in'}
       </button>
     </form>
   )

@@ -2,11 +2,14 @@ import { LoginForm } from './LoginForm'
 
 export default function AdminLoginPage() {
   return (
-    <div className="mx-auto max-w-md px-6 py-24">
-      <h1 className="font-display text-3xl text-ink">Admin login</h1>
-      <p className="mt-2 text-muted">Enter your email for a login link.</p>
-      <div className="mt-8">
-        <LoginForm />
+    <div className="flex min-h-screen items-center justify-center px-5">
+      <div className="w-full max-w-sm">
+        <p className="font-display text-2xl text-ink">HallWay</p>
+        <h1 className="mt-6 text-xl font-semibold text-ink">Sign in to your studio</h1>
+        <p className="mt-1 text-sm text-muted">Clients, galleries and your site, in one place.</p>
+        <div className="mt-8">
+          <LoginForm />
+        </div>
       </div>
     </div>
   )

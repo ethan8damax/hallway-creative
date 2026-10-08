@@ -2,7 +2,13 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 const insert = vi.fn()
 vi.mock('@/lib/supabase/service', () => ({
-  createServiceClient: () => ({ from: () => ({ insert }) }),
+  createServiceClient: () => ({
+    from: () => ({
+      insert,
+      // nextSortOrder: pretend the highest existing sort_order is 4
+      select: () => ({ order: () => ({ limit: () => ({ eq: async () => ({ data: [{ sort_order: 4 }] }), then: (r: (v: unknown) => void) => r({ data: [{ sort_order: 4 }] }) }) }) }),
+    }),
+  }),
 }))
 // ponytail: revalidatePath throws outside a real Next.js request/render
 // context ("static generation store missing") — mock it so this test
@@ -10,37 +16,38 @@ vi.mock('@/lib/supabase/service', () => ({
 vi.mock('@/lib/admin', () => ({ requireAdmin: vi.fn() }))
 vi.mock('next/cache', () => ({ revalidatePath: vi.fn() }))
 
-import { createCategory, addMediaItem } from './actions'
+import { addVideo, createCategory } from './actions'
+
+const form = (fields: Record<string, string>) => {
+  const fd = new FormData()
+  for (const [k, v] of Object.entries(fields)) fd.set(k, v)
+  return fd
+}
 
 beforeEach(() => {
-  insert.mockReset()
+  insert.mockReset().mockResolvedValue({ error: null })
 })
 
 describe('createCategory', () => {
-  it('inserts a category with a slugified title', async () => {
-    insert.mockResolvedValue({ error: null })
-
-    await createCategory('Family Portraits')
-
-    expect(insert).toHaveBeenCalledWith({ title: 'Family Portraits', slug: 'family-portraits', sort_order: 0 })
+  it('inserts a slugified category at the end of the list', async () => {
+    await createCategory(form({ title: 'Family Portraits', description: '' }))
+    expect(insert).toHaveBeenCalledWith({ title: 'Family Portraits', slug: 'family-portraits', description: null, sort_order: 5 })
   })
 
   it('surfaces a friendly message on a duplicate slug', async () => {
     insert.mockResolvedValue({ error: { code: '23505', message: 'duplicate key value' } })
-
-    await expect(createCategory('Family Portraits')).rejects.toThrow('A category with that name already exists.')
+    await expect(createCategory(form({ title: 'Sports' }))).rejects.toThrow('A category with that name already exists.')
   })
 })
 
-describe('addMediaItem', () => {
-  it('returns the inserted row, including its database-assigned id', async () => {
-    const insertedRow = { id: 'real-uuid', media_type: 'image', image_url: 'https://r2/a.jpg', preview_url: 'https://r2/a-preview.jpg', video_url: null, caption: null, sort_order: 0 }
-    const single = vi.fn().mockResolvedValue({ data: insertedRow, error: null })
-    const select = vi.fn().mockReturnValue({ single })
-    insert.mockReturnValue({ select })
+describe('addVideo', () => {
+  it('rejects links that are not YouTube or Vimeo', async () => {
+    await expect(addVideo('c1', form({ video_url: 'https://example.com/clip.mp4' }))).rejects.toThrow('Paste a YouTube or Vimeo link.')
+    expect(insert).not.toHaveBeenCalled()
+  })
 
-    const result = await addMediaItem('category-1', { media_type: 'image', image_url: 'https://r2/a.jpg', preview_url: 'https://r2/a-preview.jpg' })
-
-    expect(result).toEqual(insertedRow)
+  it('adds a valid video after the existing media', async () => {
+    await addVideo('c1', form({ video_url: 'https://vimeo.com/12345', caption: 'Season recap' }))
+    expect(insert).toHaveBeenCalledWith(expect.objectContaining({ media_type: 'video', video_url: 'https://vimeo.com/12345', sort_order: 5 }))
   })
 })
