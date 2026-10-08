@@ -59,8 +59,12 @@ Not yet written. Once a copywriting pass happens, copy should live in dedicated 
 
 Subsystem 1 (marketing/portfolio site) and the CMS migration off Sanity onto Supabase are both complete and deployed — `/admin` handles all content editing (site copy, about, portfolio categories/media). Subsystem 2 (client gallery delivery) is also complete: galleries/photos schema, admin gallery CRUD + photo upload, send-to-client email, the public access-code-gated gallery page (HMAC-signed unlock cookie, rate-limited), and client-side "download all" are all built, tested, and reviewed.
 
+**Admin pass (2026-10-08):** `/admin` is now Andrew's studio: a Today dashboard (new inquiries, galleries to send or chase, events coming up), a client pipeline (Inquiry → Conversation → Contract → Event → Red Room → Posted, with notes, contract link and history per client), gallery delivery tools (bulk upload, reorder/cover, expiry, sent/opened/downloaded tracking, send-with-code), full portfolio and site editing (services, portrait, captions, videos), and an account page. Contact-form inquiries are saved to the database *and* emailed, so leads survive email outages.
+
 **Remaining before full launch:**
 - Register a domain, verify it in Resend, update `CONTACT_FROM_EMAIL` and `NEXT_PUBLIC_SITE_URL` to the real domain.
+- Both admin accounts use the starter password `password` — change it in /admin/account before launch.
+- Replace the demo clients/galleries and Unsplash placeholder photos (seeded 2026-10-07/08) with real ones.
 - Andrew needs to actually upload real photos/videos and write his real bio/copy through `/admin` — everything is still placeholder content, and no real client galleries have been created yet.
 
 Final brand visual design pass (2026-09-11, "The Screening Room") is complete and live — see `DESIGN.md`.

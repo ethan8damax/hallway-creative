@@ -66,7 +66,7 @@ export function SortablePhotoGrid({
               <span className="absolute left-2 top-2 rounded-xs bg-bg/85 px-1.5 py-0.5 text-xs font-medium text-ink">Cover</span>
             )}
           </div>
-          <div className="flex items-center gap-1 px-1.5 py-1.5">
+          <div className="flex items-center gap-0.5 px-1 py-1">
             <button type="button" onClick={() => reorder(index, index - 1)} disabled={index === 0} aria-label="Move earlier" className="rounded-xs px-1.5 py-0.5 text-sm text-muted hover:bg-bg hover:text-ink disabled:opacity-30">
               ←
             </button>
@@ -74,17 +74,18 @@ export function SortablePhotoGrid({
               →
             </button>
             {index > 0 && (
-              <button type="button" onClick={() => reorder(index, 0)} className="rounded-xs px-1.5 py-0.5 text-xs text-muted hover:bg-bg hover:text-ink">
-                Make cover
+              <button type="button" onClick={() => reorder(index, 0)} title="Make this the cover" aria-label="Make this the cover" className="rounded-xs px-1.5 py-0.5 text-xs text-muted hover:bg-bg hover:text-ink">
+                Set cover
               </button>
             )}
             <button
               type="button"
               onClick={() => onDelete(photo.id)}
               aria-label={`Delete ${photo.label ?? 'photo'}`}
-              className="ml-auto rounded-xs px-1.5 py-0.5 text-xs text-tally-text hover:bg-bg"
+              title="Delete"
+              className="ml-auto rounded-xs px-2 py-0.5 text-base leading-none text-tally-text hover:bg-bg"
             >
-              Delete
+              ×
             </button>
           </div>
           {renderExtra?.(photo)}

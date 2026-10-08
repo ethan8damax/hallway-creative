@@ -20,7 +20,7 @@ export default async function ClientsPage({ searchParams }: { searchParams: Prom
         description={
           showArchived
             ? 'Leads that went nowhere and finished jobs you’ve filed away. Open one to move it back into the pipeline.'
-            : 'Every client from first message to posted work. Drag a card to move it to the next stage.'
+            : 'Every client from first message to posted work. Drag cards between stages on a computer, or open a client to change their stage.'
         }
         actions={
           <Link href={showArchived ? '/admin/clients' : '/admin/clients?archived=1'} className="text-sm text-muted underline-offset-4 hover:text-ink hover:underline">
