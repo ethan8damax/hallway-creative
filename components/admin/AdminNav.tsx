@@ -60,7 +60,7 @@ export function AdminNav({ newInquiries }: { newInquiries: number }) {
         </nav>
         <div className="mt-auto flex flex-col gap-0.5 border-t border-border pt-3">
           <Link href="/" target="_blank" className="rounded-xs px-3 py-2 text-sm text-muted transition-colors hover:bg-surface/60 hover:text-ink">
-            View site ↗
+            View site
           </Link>
           <Link href="/admin/account" className="rounded-xs px-3 py-2 text-sm text-muted transition-colors hover:bg-surface/60 hover:text-ink">
             Account

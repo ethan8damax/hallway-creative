@@ -24,12 +24,12 @@ export default async function CategoryMediaPage({ params }: { params: Promise<{ 
       <div className="mb-8 mt-3 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <h1 className="text-2xl font-semibold tracking-[-0.01em] text-ink">{category.title}</h1>
         <a href={`/portfolio/${category.slug}`} target="_blank" rel="noopener noreferrer" className={btn.secondary}>
-          View on site ↗
+          View on site
         </a>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,3fr)_minmax(0,1fr)]">
-        <Panel title="Photos" description="Drag to reorder. The first photo is the cover. Captions save when you click away.">
+        <Panel title="Photos" description="Drag to reorder, or use the arrows. The first photo is the cover. Edit a caption and it saves when you click away. Delete removes the photo from the site.">
           {/* remount when the server adds items (e.g. a video) so local state picks them up */}
           <MediaEditor key={items.length} categoryId={category.id} initialItems={items} />
         </Panel>

@@ -63,7 +63,7 @@ export default async function GalleryDetailPage({ params }: { params: Promise<{ 
         </div>
         <div className="flex gap-2">
           <a href={`/gallery/${gallery.slug}`} target="_blank" rel="noopener noreferrer" className={btn.secondary}>
-            Preview ↗
+            Preview
           </a>
           <PublishToggle id={gallery.id} status={gallery.status} />
         </div>

@@ -2,7 +2,8 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
-import { reorderCategories } from './actions'
+import { btn } from '@/components/admin/ui'
+import { deleteCategory, reorderCategories } from './actions'
 
 type Row = { id: string; title: string; slug: string; cover_url?: string | null; count: number }
 
@@ -26,25 +27,28 @@ export function CategoryList({ initial }: { initial: Row[] }) {
     }
   }
 
+  async function remove(row: Row) {
+    if (!window.confirm(`Delete the ${row.title} category and all ${row.count} items in it? It disappears from the site.`)) return
+    setError(false)
+    try {
+      await deleteCategory(row.id)
+      setRows((all) => all.filter((r) => r.id !== row.id))
+    } catch {
+      setError(true)
+    }
+  }
+
   return (
     <>
       {error && (
         <p role="alert" className="mb-3 text-sm text-tally-text">
-          Could not save the new order. Try again.
+          Something didn&apos;t save. Try again.
         </p>
       )}
       <ul className="divide-y divide-border rounded-md border border-border">
         {rows.map((row, i) => (
-          <li key={row.id} className="flex items-center gap-3 px-3 py-2.5">
-            <div className="flex flex-col">
-              <button type="button" onClick={() => move(i, i - 1)} disabled={i === 0} aria-label={`Move ${row.title} up`} className="px-1 text-xs text-muted hover:text-ink disabled:opacity-30">
-                ▲
-              </button>
-              <button type="button" onClick={() => move(i, i + 1)} disabled={i === rows.length - 1} aria-label={`Move ${row.title} down`} className="px-1 text-xs text-muted hover:text-ink disabled:opacity-30">
-                ▼
-              </button>
-            </div>
-            <Link href={`/admin/portfolio/${row.id}`} className="flex min-w-0 flex-1 items-center gap-4 rounded-xs py-1 hover:text-ink">
+          <li key={row.id} className="flex flex-col gap-3 px-3 py-3 sm:flex-row sm:items-center">
+            <Link href={`/admin/portfolio/${row.id}`} className="flex min-w-0 flex-1 items-center gap-4 rounded-xs hover:text-ink">
               <span className="h-12 w-16 shrink-0 overflow-hidden rounded-xs bg-surface">
                 {row.cover_url && <img src={row.cover_url} alt="" className="h-full w-full object-cover" />}
               </span>
@@ -55,6 +59,20 @@ export function CategoryList({ initial }: { initial: Row[] }) {
                 </span>
               </span>
             </Link>
+            <div className="flex flex-wrap items-center gap-1">
+              <button type="button" onClick={() => move(i, i - 1)} disabled={i === 0} aria-label={`Move ${row.title} up`} className={btn.quiet}>
+                Up
+              </button>
+              <button type="button" onClick={() => move(i, i + 1)} disabled={i === rows.length - 1} aria-label={`Move ${row.title} down`} className={btn.quiet}>
+                Down
+              </button>
+              <Link href={`/admin/portfolio/${row.id}`} className={btn.secondary}>
+                Edit
+              </Link>
+              <button type="button" onClick={() => remove(row)} className={btn.danger}>
+                Delete
+              </button>
+            </div>
           </li>
         ))}
       </ul>

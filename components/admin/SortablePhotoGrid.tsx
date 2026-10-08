@@ -60,11 +60,20 @@ export function SortablePhotoGrid({
             overId === photo.id && dragId !== photo.id ? 'border-monitor' : 'border-border'
           } ${dragId === photo.id ? 'opacity-40' : ''}`}
         >
-          <div className="relative aspect-[4/3] cursor-grab active:cursor-grabbing">
-            <img src={photo.src} alt="" loading="lazy" className="h-full w-full object-cover" draggable={false} />
+          <div className="relative aspect-[4/3] cursor-grab overflow-hidden active:cursor-grabbing">
+            {/* absolute, so a tall portrait fills the 4:3 frame instead of stretching it */}
+            <img src={photo.src} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" draggable={false} />
             {index === 0 && (
               <span className="absolute left-2 top-2 rounded-xs bg-bg/85 px-1.5 py-0.5 text-xs font-medium text-ink">Cover</span>
             )}
+            <button
+              type="button"
+              onClick={() => onDelete(photo.id)}
+              aria-label={`Delete ${photo.label ?? 'photo'}`}
+              className="absolute right-2 top-2 rounded-xs bg-bg/85 px-2 py-0.5 text-xs font-medium text-tally-text transition-colors hover:bg-bg"
+            >
+              Delete
+            </button>
           </div>
           <div className="flex items-center gap-0.5 px-1 py-1">
             <button type="button" onClick={() => reorder(index, index - 1)} disabled={index === 0} aria-label="Move earlier" className="rounded-xs px-1.5 py-0.5 text-sm text-muted hover:bg-bg hover:text-ink disabled:opacity-30">
@@ -78,15 +87,6 @@ export function SortablePhotoGrid({
                 Set cover
               </button>
             )}
-            <button
-              type="button"
-              onClick={() => onDelete(photo.id)}
-              aria-label={`Delete ${photo.label ?? 'photo'}`}
-              title="Delete"
-              className="ml-auto rounded-xs px-2 py-0.5 text-base leading-none text-tally-text hover:bg-bg"
-            >
-              ×
-            </button>
           </div>
           {renderExtra?.(photo)}
         </li>

@@ -12,8 +12,8 @@ function CaptionField({ id, initial }: { id: string; initial: string }) {
   const [value, setValue] = useState(initial)
   const [state, setState] = useState<'idle' | 'saved' | 'error'>('idle')
   return (
-    <label className="block border-t border-border px-1.5 pb-1.5 pt-1">
-      <span className="sr-only">Caption</span>
+    <label className="block border-t border-border px-1.5 pb-1.5 pt-1.5">
+      <span className="px-1.5 text-[0.6875rem] font-medium text-muted">Caption</span>
       <input
         value={value}
         onChange={(e) => {
@@ -29,8 +29,8 @@ function CaptionField({ id, initial }: { id: string; initial: string }) {
             setState('error')
           }
         }}
-        placeholder="Caption (also helps screen readers)"
-        className="w-full bg-transparent px-1.5 py-1 text-xs text-ink placeholder:text-muted focus:outline-none"
+        placeholder="Describe the photo"
+        className="mt-0.5 w-full rounded-xs border border-border bg-bg px-1.5 py-1 text-xs text-ink placeholder:text-muted focus:border-monitor focus:outline-none"
       />
       {state !== 'idle' && (
         <span className={`px-1.5 text-[0.6875rem] ${state === 'saved' ? 'text-monitor' : 'text-tally-text'}`}>{state === 'saved' ? 'Saved' : 'Not saved, try again'}</span>

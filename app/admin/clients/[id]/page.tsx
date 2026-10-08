@@ -91,7 +91,7 @@ export default async function ClientPage({ params }: { params: Promise<{ id: str
               </div>
               {client.contract_url && (
                 <a href={client.contract_url} target="_blank" rel="noopener noreferrer" className="-mt-1 text-sm text-monitor underline-offset-4 hover:underline">
-                  Open contract ↗
+                  Open contract
                 </a>
               )}
             </ActionForm>
