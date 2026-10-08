@@ -133,3 +133,13 @@ body {
 }
 
 dialog::backdrop { background: transparent; }
+
+/* Admin: "Saved" confirmation that fades itself out — no timers in React. */
+@keyframes saved-flash {
+  0%, 70% { opacity: 1; }
+  100% { opacity: 0; }
+}
+.saved-flash { animation: saved-flash 2.8s var(--ease-out-quart) forwards; }
+@media (prefers-reduced-motion: reduce) {
+  .saved-flash { animation: none !important; }
+}

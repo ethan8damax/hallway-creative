@@ -4,6 +4,7 @@ import Script from "next/script";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { PublicChrome } from "@/components/PublicChrome";
 import { getSiteSettings } from "@/lib/supabase/queries";
 
 const fraunces = Fraunces({
@@ -37,9 +38,13 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         <Script id="theme-init" strategy="beforeInteractive">
           {`try{if(localStorage.getItem('theme')==='light'){document.documentElement.classList.add('light')}}catch(e){}`}
         </Script>
-        <Header />
+        <PublicChrome>
+          <Header />
+        </PublicChrome>
         <main className="flex-1">{children}</main>
-        <Footer settings={settings} />
+        <PublicChrome>
+          <Footer settings={settings} />
+        </PublicChrome>
       </body>
     </html>
   );
