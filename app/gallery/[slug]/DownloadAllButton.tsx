@@ -4,7 +4,17 @@ import { useState } from 'react'
 import JSZip from 'jszip'
 import type { Photo } from '@/lib/supabase/types'
 
-export function DownloadAllButton({ title, photos, className = '' }: { title: string; photos: Photo[]; className?: string }) {
+export function DownloadAllButton({
+  title,
+  photos,
+  className = '',
+  onDownloaded,
+}: {
+  title: string
+  photos: Photo[]
+  className?: string
+  onDownloaded?: () => void
+}) {
   const [zipping, setZipping] = useState(false)
   const [done, setDone] = useState(0)
   const [error, setError] = useState(false)
@@ -31,6 +41,7 @@ export function DownloadAllButton({ title, photos, className = '' }: { title: st
       a.download = `${title.replace(/\s+/g, '-')}.zip`
       a.click()
       URL.revokeObjectURL(url)
+      onDownloaded?.()
     } catch {
       setError(true)
     } finally {

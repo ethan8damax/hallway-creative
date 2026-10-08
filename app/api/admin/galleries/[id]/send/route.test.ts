@@ -1,3 +1,4 @@
+import bcrypt from 'bcryptjs'
 import { describe, it, expect, vi } from 'vitest'
 
 vi.mock('@/lib/supabase/server', () => ({ createClient: vi.fn() }))
@@ -22,7 +23,16 @@ function requestParams() {
   return { params: Promise.resolve({ id: 'gallery-1' }) }
 }
 
-const galleryRow = { title: 'Sunset Wedding', client_name: 'Jane', slug: 'sunset-wedding', client_email: 'jane@example.com' }
+// ponytail: real bcrypt hash of 'sunset-2026' (cost 4 keeps the test fast)
+const galleryRow = {
+  title: 'Sunset Wedding',
+  client_name: 'Jane',
+  slug: 'sunset-wedding',
+  client_email: 'jane@example.com',
+  access_code_hash: bcrypt.hashSync('sunset-2026', 4),
+  client_id: null,
+}
+const withCode = (code: string) => new Request('http://localhost', { method: 'POST', body: JSON.stringify({ code }) })
 
 function mockAuthenticated() {
   vi.mocked(createClient).mockResolvedValue({ auth: { getUser: vi.fn().mockResolvedValue({ data: { user: { id: 'u1', email: 'hallway.ah@gmail.com' } } }) } } as never)
@@ -33,6 +43,7 @@ function mockGalleryLookup(result: { data: unknown; error: unknown }, update = v
     from: () => ({
       select: () => ({ eq: () => ({ single: vi.fn().mockResolvedValue(result) }) }),
       update,
+      insert: vi.fn().mockResolvedValue({ error: null }),
     }),
   } as never)
   return update
@@ -56,16 +67,32 @@ describe('POST /api/admin/galleries/[id]/send', () => {
     expect(response.status).toBe(404)
   })
 
-  it('emails the client, records sent_at, and returns 200', async () => {
+  it('refuses to send when the access code does not match, so a typo never reaches the client', async () => {
+    mockAuthenticated()
+    const update = mockGalleryLookup({ data: galleryRow, error: null })
+    send.mockReset()
+
+    const response = await POST(withCode('sunset-2025'), requestParams())
+
+    expect(response.status).toBe(400)
+    expect(send).not.toHaveBeenCalled()
+    expect(update).not.toHaveBeenCalled()
+  })
+
+  it('emails the client the link and code, records sent_at, and returns 200', async () => {
     mockAuthenticated()
     const update = mockGalleryLookup({ data: galleryRow, error: null })
     send.mockResolvedValue({ error: null })
 
-    const response = await POST(new Request('http://localhost'), requestParams())
+    const response = await POST(withCode('sunset-2026'), requestParams())
 
     expect(response.status).toBe(200)
     expect(send).toHaveBeenCalledWith(
-      expect.objectContaining({ to: 'jane@example.com', subject: expect.stringContaining('Sunset Wedding') })
+      expect.objectContaining({
+        to: 'jane@example.com',
+        subject: expect.stringContaining('Sunset Wedding'),
+        text: expect.stringContaining('Access code: sunset-2026'),
+      })
     )
     expect(update).toHaveBeenCalledWith(expect.objectContaining({ sent_at: expect.any(String) }))
   })
@@ -75,7 +102,7 @@ describe('POST /api/admin/galleries/[id]/send', () => {
     const update = mockGalleryLookup({ data: galleryRow, error: null })
     send.mockResolvedValue({ error: { message: 'domain not verified' } })
 
-    const response = await POST(new Request('http://localhost'), requestParams())
+    const response = await POST(withCode('sunset-2026'), requestParams())
 
     expect(response.status).toBe(502)
     expect(update).not.toHaveBeenCalled()

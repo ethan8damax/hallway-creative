@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase/service'
 import { verifyAccessCode } from '@/lib/accessCode'
 import { signGalleryToken } from '@/lib/gallerySession'
+import { isExpired } from '@/lib/galleryExpiry'
 
 const ONE_YEAR_SECONDS = 60 * 60 * 24 * 365
 
@@ -11,12 +12,16 @@ export async function POST(request: Request, { params }: { params: Promise<{ slu
 
   const { data: gallery, error } = await createServiceClient()
     .from('galleries')
-    .select('id, access_code_hash')
+    .select('id, access_code_hash, expires_on')
     .eq('slug', slug)
     .single()
 
   if (error || !gallery) {
     return NextResponse.json({ error: 'not_found' }, { status: 404 })
+  }
+
+  if (isExpired(gallery.expires_on)) {
+    return NextResponse.json({ error: 'expired' }, { status: 410 })
   }
 
   const valid = await verifyAccessCode(code, gallery.access_code_hash)

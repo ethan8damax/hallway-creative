@@ -10,11 +10,13 @@ export function Lightbox({
   index,
   onIndexChange,
   onClose,
+  onDownload,
 }: {
   items: LightboxItem[]
   index: number | null
   onIndexChange: (index: number) => void
   onClose: () => void
+  onDownload?: () => void
 }) {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const touchStartX = useRef<number | null>(null)
@@ -62,6 +64,7 @@ export function Lightbox({
       a.download = target.filename ?? 'photo.jpg'
       a.click()
       URL.revokeObjectURL(url)
+      onDownload?.()
     } catch {
       window.open(target.downloadUrl, '_blank', 'noopener')
     } finally {

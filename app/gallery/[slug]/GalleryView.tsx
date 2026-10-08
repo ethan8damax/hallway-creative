@@ -11,13 +11,30 @@ function formatDate(date: string | null) {
   return new Date(`${date}T00:00:00Z`).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
 }
 
-export function GalleryView({ gallery, photos }: { gallery: Pick<Gallery, 'title' | 'event_date'>; photos: Photo[] }) {
+export function GalleryView({
+  gallery,
+  photos,
+  isPreview = false,
+}: {
+  gallery: Pick<Gallery, 'title' | 'event_date' | 'slug'>
+  photos: Photo[]
+  isPreview?: boolean
+}) {
   const [openIndex, setOpenIndex] = useState<number | null>(null)
   const cover = photos[0]
   const date = formatDate(gallery.event_date)
+  // Tells Andrew the client got their photos; skipped when he's previewing.
+  const reportDownload = () => {
+    if (!isPreview) fetch(`/api/gallery/${gallery.slug}/downloaded`, { method: 'POST' }).catch(() => {})
+  }
 
   return (
     <div>
+      {isPreview && (
+        <p className="bg-surface px-5 py-2.5 text-center text-sm text-ink">
+          Preview: this is what your client sees after entering the code. Your visits aren&apos;t counted as views.
+        </p>
+      )}
       <section className="relative flex h-[72svh] min-h-[26rem] items-end overflow-hidden bg-surface">
         {cover && <img src={cover.url} alt="" className="hero-image absolute inset-0 h-full w-full object-cover" />}
         <div className="photo-scrim absolute inset-0" />
@@ -36,6 +53,7 @@ export function GalleryView({ gallery, photos }: { gallery: Pick<Gallery, 'title
           <DownloadAllButton
             title={gallery.title}
             photos={photos}
+            onDownloaded={reportDownload}
             className="border border-white/60 hover:border-white hover:bg-white/10"
           />
         </div>
@@ -84,6 +102,7 @@ export function GalleryView({ gallery, photos }: { gallery: Pick<Gallery, 'title
         index={openIndex}
         onIndexChange={setOpenIndex}
         onClose={() => setOpenIndex(null)}
+        onDownload={reportDownload}
       />
     </div>
   )

@@ -13,8 +13,10 @@ export function ActionForm({
   children,
   className = '',
   resetOnSuccess = false,
+  onSuccess,
 }: {
-  action: (formData: FormData) => Promise<void>
+  action: (formData: FormData) => Promise<unknown>
+  onSuccess?: (result: unknown) => void
   submitLabel?: string
   children: React.ReactNode
   className?: string
@@ -22,7 +24,8 @@ export function ActionForm({
 }) {
   const [state, formAction, pending] = useActionState<State, FormData>(async (_prev, formData) => {
     try {
-      await action(formData)
+      const result = await action(formData)
+      onSuccess?.(result)
       return { ok: true, at: Date.now() }
     } catch (e) {
       return { error: e instanceof Error && e.message !== 'unauthorized' ? e.message : 'Could not save. Try again.' }
